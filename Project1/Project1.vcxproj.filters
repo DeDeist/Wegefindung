@@ -35,5 +35,11 @@
     <ClInclude Include="Lex_Citys.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="astar_class.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="dijkstra_class.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

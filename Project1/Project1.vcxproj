@@ -137,6 +137,8 @@
     <ClCompile Include="MyForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="astar_class.h" />
+    <ClInclude Include="dijkstra_class.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Lexikalische_Analyse.h" />
     <ClInclude Include="Lex_Citys.h" />
