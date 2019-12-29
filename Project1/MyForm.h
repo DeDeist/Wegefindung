@@ -4,7 +4,9 @@
 #include "iostream"
 #include <msclr/marshal_cppstd.h>
 #include "Lexikalische_Analyse.h"
-#include "Lex_Functions.h""
+#include "Lex_Functions.h"
+#include "astar_class.h"
+#include "dijkstra_class.h"
 
 namespace Project1 {
 	using namespace System;
@@ -83,6 +85,16 @@ namespace Project1 {
 			map_area_graph->DrawLine(black_line, one->pos[0], one->pos[1], two->pos[0], two->pos[1]);
 		}
 		
+		void connect_city_astern(City* one, City* two)
+		{
+			map_area_graph->DrawLine(red_line, one->pos[0], one->pos[1], two->pos[0], two->pos[1]);
+		}
+
+		void connect_city_dij(City* one, City* two)
+		{
+			map_area_graph->DrawLine(green_line, one->pos[0], one->pos[1], two->pos[0], two->pos[1]);
+		}
+
 		int get_index(map<int, City*> City_Map, std::string City)
 		{
 			Boolean match = TRUE;
@@ -129,6 +141,7 @@ namespace Project1 {
 	private: Pen^ black_line;
 	private: Pen^ green_line;
 	private: Pen^ blue_line;
+	private: Pen^ red_line;
 	private: SolidBrush^ red_point;
 	private: SolidBrush^ text_brush;
 	private: System::Drawing::Font^ lable_font;
@@ -360,8 +373,9 @@ namespace Project1 {
 		{
 			this->map_area_graph = MapArea->CreateGraphics();
 			this->black_line = gcnew Pen(Color::Black);
-			this->green_line = gcnew Pen(Color::Green);
-			this->blue_line = gcnew Pen(Color::Blue);
+			this->green_line = gcnew Pen(Color::Green,6);
+			this->blue_line = gcnew Pen(Color::Blue,3);
+			this->red_line = gcnew Pen(Color::Red, 2);
 			this->red_point = gcnew SolidBrush(Color::Red);
 			this->lable_font = gcnew System::Drawing::Font("Arial", 10);
 			this->text_brush = gcnew SolidBrush(Color::Blue);
@@ -374,8 +388,130 @@ namespace Project1 {
 	}
 	private: System::Void StartButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
+		if (StartBox->SelectedIndex == -1)
+		{
+			cout << "Wählen Sie einen Startort aus." << endl;
+			return;
+		}
+		if (DestinationBox->SelectedIndex == -1)
+		{
+			cout << "Wählen Sie einen Zielort aus." << endl;
+			return;
+		}
+
+
+
+
+		if (DijkstraCheckBox->Checked)
+		{
+			cout << "Dijkstra ausgewählt" << endl;
+			dijkstra_algo dijk;
+			cout << "DIJKSTRA:\n";
+			vector<int> dijk_path = dijk.dijkstra(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix);	//Ausführen des Dijkstra, Übergabe: Start, Ziel, Verbindungsmatrix. Rückgabe: Vektor mit Weg
+			
+			for (int ij = 0; ij < dijk_path.size(); ij++)
+				cout << dijk_path[ij] << " ";				//dijk_path[]  Weg Ziel -> Start
+			cout << "\nCycles: " << dijk.cycles << "\n";	//dijk.cycles Anzahl Durchläufe
+			cout << "Elapsed time: " << dijk.elapsed_time.count() << " s\n";	//dijk.elapsesd_time.count() benötigte Zeit
+			for (int i = 1; i < dijk_path.size(); i++)
+			{
+				connect_city_dij(all_citys[dijk_path[i - 1]], all_citys[dijk_path[i]]);
+
+			}
+		}	
 		
-	
+		if (AsternCheckBox->Checked)
+		{
+			cout << "A-Stern ausgewählt" << endl;
+			astar_algo a_star;
+			cout << "A_STAR:\n";
+			vector<int> astar_path = a_star.astar(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix, city_positions);	//Ausführen des A*, Übergabe: Start, Ziel, Verbindungsmatrix, Koordinaten. Rückgabe ist der Vektor mit dem gefunden Weg
+			
+			for (int ij = 0; ij < astar_path.size(); ij++)
+				cout << astar_path[ij] << " ";					//astar_path[] enthält jetzt in Umgekehrter Folge den Weg. Ziel -> Start
+			cout << "\nCycles: " << a_star.cycles << "\n";		//a_star.cycles ist die Anzahl von Durchläufen bis der Weg gefunden wurde
+			cout << "Elapsed time: " << a_star.elapsed_time.count() << " s\n"; //a_star.elapsed_time.count() enthält die dafür benötigte Zeit in sec.
+
+			for (int i = 1; i < astar_path.size(); i++)
+			{
+				connect_city_astern(all_citys[astar_path[i - 1]], all_citys[astar_path[i]]);
+
+			}
+		}
+			//		
+			//#include <iostream>
+			//#include <string>
+			//#include <stdio.h>
+			//#include <math.h>
+			//#include <vector>
+			//#include <algorithm>
+			//#include <chrono>		//Bib für Zeitmessung, die Zeit ist aber sehr kurz unterschiede sind nicht wirklich gut erkennbar da die Zeit auch gut schwankt
+			//
+			//
+			//#define xxx 10000.0		//def für "Unendlich" in der Verbindungsmatrix
+			//		using namespace std;
+			//
+			//#include "astar_class.h"		//Algorithmen
+			//#include "dijkstra_class.h"
+			//
+			//		void main()
+			//		{
+			//			int city_index_start, city_index_dest;		//index für Start und Ziel Stadt, sollte dann über GUI kommen
+			//			city_index_start = 4;
+			//			city_index_dest = 3;
+			//
+			//			vector<vector<float>> distance_matr =							//Matrix mit Verbindungsinfos, kommt von Matze
+			//			{
+			//			{ 0,xxx,xxx,205,xxx,xxx,284,282,xxx,179,xxx,xxx},
+			//			{xxx, 0,233,xxx,xxx,xxx,119,125,xxx,xxx,xxx,xxx},
+			//			{xxx,233, 0,xxx, 63,264,xxx,208, 83,xxx,xxx,xxx},
+			//			{205,xxx,xxx, 0,xxx,xxx,xxx,xxx,xxx,108,xxx,xxx},
+			//			{xxx,xxx, 63,xxx, 0,xxx,xxx,xxx, 47,xxx,xxx,xxx},
+			//			{xxx,xxx,264,xxx,xxx, 0,xxx,352,189,395,400,217},
+			//			{284,119,xxx,xxx,xxx,xxx, 0,154,xxx,xxx,xxx,xxx},
+			//			{282,125,208,xxx,xxx,352,154, 0,xxx,256,xxx,xxx},
+			//			{xxx,xxx, 83,xxx, 47,189,xxx,xxx, 0,xxx,xxx,xxx},
+			//			{179,xxx,xxx,108,xxx,395,xxx,256,xxx, 0,425,xxx},
+			//			{xxx,xxx,xxx,xxx,xxx,400,xxx,xxx,xxx,425, 0,220},
+			//			{xxx,xxx,xxx,xxx,xxx,217,xxx,xxx,xxx,xxx,220, 0},
+			//			};
+			//
+			//			vector<vector<float>> city_coords =								//Koordinaten der Städte, kommt von Matze
+			//			{
+			//			{115, 110},
+			//			{20, 120},
+			//			{15, 85},
+			//			{130, 70},
+			//			{5, 80},
+			//			{35,45},
+			//			{55, 130},
+			//			{55, 105},
+			//			{15, 65},
+			//			{90,75},
+			//			{90,5},
+			//			{45, 10}
+			//			};
+			//
+			//			astar_algo a_star;			//Objekt des A* Algorithmus anlegen
+			//			dijkstra_algo dijk;			//Objekt des Dijkstra Algorithmus anlegen
+			//
+			//			cout << "A_STAR:\n";
+			//			vector<int> astar_path = a_star.astar(city_index_start, city_index_dest, distance_matr, city_coords);	//Ausführen des A*, Übergabe: Start, Ziel, Verbindungsmatrix, Koordinaten. Rückgabe ist der Vektor mit dem gefunden Weg
+			//
+			//			for (int ij = 0; ij < astar_path.size(); ij++)
+			//				cout << astar_path[ij] << " ";					//astar_path[] enthält jetzt in Umgekehrter Folge den Weg. Ziel -> Start
+			//			cout << "\nCycles: " << a_star.cycles << "\n";		//a_star.cycles ist die Anzahl von Durchläufen bis der Weg gefunden wurde
+			//			cout << "Elapsed time: " << a_star.elapsed_time.count() << " s\n"; //a_star.elapsed_time.count() enthält die dafür benötigte Zeit in sec.
+			//
+			//
+			//
+			//			cout << "DIJKSTRA:\n";
+			//			vector<int> dijk_path = dijk.dijkstra(city_index_start, city_index_dest, distance_matr);	//Ausführen des Dijkstra, Übergabe: Start, Ziel, Verbindungsmatrix. Rückgabe: Vektor mit Weg
+			//
+			//			for (int ij = 0; ij < dijk_path.size(); ij++)
+			//				cout << dijk_path[ij] << " ";				//dijk_path[]  Weg Ziel -> Start
+			//			cout << "\nCycles: " << dijk.cycles << "\n";	//dijk.cycles Anzahl Durchläufe
+			//			cout << "Elapsed time: " << dijk.elapsed_time.count() << " s\n";	//dijk.elapsesd_time.count() benötigte Zeit
 	}
 
 	private: System::Void StartBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) 
@@ -464,7 +600,6 @@ namespace Project1 {
 	{
 
 	}
-
 	private: System::Void richTextBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) 
 	{
 
@@ -486,8 +621,9 @@ namespace Project1 {
 	{
 	
 	}
-private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-}
+	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
+	{
+	}
 };
 }
 
