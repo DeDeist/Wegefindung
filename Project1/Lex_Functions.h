@@ -1,13 +1,9 @@
-#pragma once
 
 #include <algorithm>
 #include <iomanip>
-#include <vector>
-#include <map>
-#include "Lex_Citys.h"
-using namespace std;
+#pragma once
 
-void Lex_Ausgabe_Stadt(int, map<int, City*>);
+void Lex_Ausgabe_Stadt(unsigned int, map<int, City*>);
 vector<vector<float>> Lex_Adjazenzmatrix(vector<string>, map<int, City*>);
 vector<string> Lex_Drop_Down(map<int, City*>);
 vector<vector<float>> Lex_Positions(map<int, City*>);
@@ -57,12 +53,12 @@ vector<vector<float>> Lex_Positions(map<int, City*> a_map)
 		X_Y_Pos.push_back(pos);
 	}
 
-	for (int c = 0; c < size; c++)
-	{
+	//for (int c = 0; c < size; c++)
+	//{
+	//	
+	//	cout << "{" << X_Y_Pos[c][0] << "," << X_Y_Pos[c][1] << "}"<< endl;
 
-		cout << "{" << X_Y_Pos[c][0] << "," << X_Y_Pos[c][1] << "}" << endl;
-
-	}
+	//}
 
 
 
@@ -78,18 +74,11 @@ Funktion zur Ausgabe einer bestimmten Stadt
 
 */
 
-void Lex_Ausgabe_Stadt(int ind, map<int, City*>a_map)
+void Lex_Ausgabe_Stadt(unsigned int ind, map<int, City*>a_map)
 {
 
 	std::cout << a_map[ind]->City_Name << ":" << endl;//Name der Stadt
 	std::cout << "POS: " << a_map[ind]->pos[0] << "," << a_map[ind]->pos[1] << endl;//Position auf der Karte
-
-	cout << "Time: {";//Abstände zu den Nachbarn in Stunden
-	for (vector<int>::size_type i = 0; i < a_map[ind]->Time.size(); ++i)
-	{
-		cout << a_map[ind]->Time[i] << " ";
-	}
-	cout << "}" << endl;
 
 	cout << "Neighbours: {";// Liste der Nachbarn
 	for (vector<int>::size_type i = 0; i < a_map[ind]->Neighbours.size(); ++i)
@@ -102,7 +91,7 @@ void Lex_Ausgabe_Stadt(int ind, map<int, City*>a_map)
 
 
 /*
-Funktion zur Erstellung der nxn-Adjazenzmatrix für die Algorithmen
+Funktion zur Erstellung der nxn-Adjazenzmatrix für die Algorithmen 
 
 -> bekommt map im Format: map<std::string, City*> übergeben die alle eingelesenen Städte enthält
 
@@ -114,7 +103,7 @@ Funktion zur Erstellung der nxn-Adjazenzmatrix für die Algorithmen
 <- gibt Adjazenzmatrix zurück
 */
 
-vector<vector<float>> Lex_Adjazenzmatrix(map<int, City*>a_map)
+vector<vector<float>> Lex_Adjazenzmatrix( map<int, City*>a_map)
 {
 	vector<vector<float>> nxn;
 	vector<string>All_City_Names;
@@ -123,7 +112,7 @@ vector<vector<float>> Lex_Adjazenzmatrix(map<int, City*>a_map)
 	All_City_Names = Lex_Drop_Down(a_map);
 
 	int n = All_City_Names.size(); // Naechste 4 Zeilen: Dynamische Anpassung der an den Algorithmus zu übergebenden Map
-
+	
 	nxn.resize(n);
 
 
@@ -131,26 +120,32 @@ vector<vector<float>> Lex_Adjazenzmatrix(map<int, City*>a_map)
 		nxn[i].resize(n);
 
 
-	for (vector<int>::size_type i = 0; i < n; ++i)
+	for (vector<int>::size_type i = 0; i <n; ++i)
 	{
 
 		for (vector<int>::size_type j = 0; j < n; ++j)
 		{
 
-			vector<string> V = a_map[i]->Neighbours;
+			vector<string> NB = a_map[i]->Neighbours;
 
 
-			std::vector<string>::iterator it = find(V.begin(), V.end(), All_City_Names[j]);
+			std::vector<string>::iterator it = find(NB.begin(), NB.end(), All_City_Names[j]); // schaut ob Stadt (der inneren Schleife) eine Nachbarstadt der Stadt in der auesseren Schleife ist
 
 			if (All_City_Names[i] == All_City_Names[j]) //Traegt 0 ein
 			{
 				nxn[i][j] = 0;
 			}
 
-			else if (it != V.end()) //Traegt Zeit ein
+			else if (it != NB.end()) //Traegt Zeit ein
 			{
-				int ind = distance(V.begin(), it);
-				nxn[i][j] = a_map[i]->Time[ind];
+
+				//int ind = distance(NB.begin(), it);
+
+				//cout << a_map[i]->City_Name << "--" << a_map[j]->City_Name << endl;
+				int x = (a_map[i]->pos[0] - a_map[j]->pos[0]);
+				int y = (a_map[i]->pos[1] - a_map[j]->pos[1]);
+
+				nxn[i][j] = (int)sqrt(x*x + y*y);
 			}
 
 			else // Traegt inf. ein
@@ -159,11 +154,11 @@ vector<vector<float>> Lex_Adjazenzmatrix(map<int, City*>a_map)
 			}
 
 		}
-		for (vector<int>::size_type d = 0; d < nxn[i].size(); ++d)// Ausgabe eines kompletten Vectors
-		{
-			cout << setw(4) << nxn[i][d] << ", \t";
-		}
-		cout << endl;
+		//for (vector<int>::size_type d = 0; d < nxn[i].size(); ++d)// Ausgabe eines kompletten Vectors
+		//{
+		//	cout << setw(4) << nxn[i][d] << ", \t";
+		//}
+		//cout << endl;
 	}
 	return nxn;
 }

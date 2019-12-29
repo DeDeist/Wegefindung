@@ -47,7 +47,7 @@ public:
 	void yyerror(char* ers); //error reporter
 	int IP_MatchToken(string& tok); //checks the token
 	void InitParse(FILE* inp, FILE* err, FILE* lst); //Sets the File pointers
-
+	
 	void pr_tokentable(); //test output for tokens
 	map<int, City*> yyparse();
 	void IP_init_token_table(); //loads the tokens
@@ -101,12 +101,12 @@ Funktion zur Erstellung der Map im Format: map<std::string, City*>
 
 -> Kein übergabeparameter
 
--- Funktion wertet die von yylex() übergebenen Token anhand der ASCII-Tabelle oder den in: IP_init_token_table() definierten Token aus
+-- Funktion wertet die von yylex() übergebenen Token anhand der ASCII-Tabelle oder den in: IP_init_token_table() definierten Token aus 
    und ruft dann die entsprechende Methode des erstellten Objekts "Citys" auf die lediglich die übergebenen Vektoren  und Strings abspeichert
 -- Erstellt wird dabei eine Map mit Objekten vom Typ: map<std::string, City*> auf die über die Städtenamen zugegriffen werden kann.
 
 
-<- gibt erstellte Map zurück
+<- gibt erstellte Map zurück 
 */
 map<int, City*> CParser::yyparse()
 {
@@ -115,10 +115,10 @@ map<int, City*> CParser::yyparse()
 	int ind = 0;
 	int tok;
 	if (prflag)fprintf(IP_List, "%5d ", (int)IP_LineNumber);
-
+	
 	tok = yylex();
 
-	while (tok != 0)
+	while (tok != 0)   
 	{
 
 
@@ -133,10 +133,10 @@ map<int, City*> CParser::yyparse()
 				if (tok == IDENTIFIER)
 				{
 					NAME = yylval.s;
-
+					
 					Citys.insert(make_pair(ind, new City()));  // Erstellt Spalte in der Map: "All_Citys" in der zum einen Der Name der Stadt und dessen Instanz abgelegt sind
 					Citys[ind]->set_City_Name(NAME);// Name der Stadt in das Objekt schreiben
-
+					
 					while (tok != 0 && tok != 125)
 					{
 						tok = yylex();
@@ -151,13 +151,13 @@ map<int, City*> CParser::yyparse()
 								{
 
 									poses.push_back(yylval.i);
-
+									
 								}
 							}
 							Citys[ind]->set_pos(poses);
 
 						}
-						else if (tok == TIME1)// Einlesen der Zeiten von Ort zu Ort
+						/*else if (tok == TIME1)// Einlesen der Zeiten von Ort zu Ort
 						{
 							vector<float> times;
 							while (tok != 93)
@@ -170,7 +170,7 @@ map<int, City*> CParser::yyparse()
 								}
 							}
 							Citys[ind]->set_Time(times);
-						}
+						}*/
 						else if (tok == NEIGHBOURS1)
 						{
 							vector<string> neighbours;
@@ -186,7 +186,7 @@ map<int, City*> CParser::yyparse()
 							Citys[ind]->set_neighbours(neighbours);
 						}
 						else if (tok == 125) break;
-
+						
 					};
 					ind++;
 					break;
@@ -194,7 +194,7 @@ map<int, City*> CParser::yyparse()
 				}
 			};
 		}
-
+		
 		tok = yylex();
 	}
 	return Citys;
@@ -255,6 +255,7 @@ int CParser::yylex()
 		switch (s) {
 			//Starting state, look for something resembling a token.
 		case L_START:
+			
 			if (isdigit(c)) {
 				s = L_INT;
 			}
@@ -336,7 +337,7 @@ int CParser::yylex()
 * it with a specific token value.
 */
 		case L_IDENT:
-			if (isalpha(c) || isdigit(c) || c == '_')
+			if (isalpha(c) || isdigit(c) || c == '_' || c == '-')
 				break;
 			Ungetc(c);
 			yytext = yytext.substr(0, yytext.size() - 1);

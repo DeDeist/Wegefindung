@@ -62,7 +62,7 @@ namespace Project1 {
 		{
 			System::String^ sys_str_lable_name = gcnew String(lable_name.c_str());
 			this->drawpoint(x-5, y-5);			
-			map_area_graph->DrawString(sys_str_lable_name, this->lable_font, this->text_brush,float (x+10),float (y-5));
+			map_area_graph->DrawString(sys_str_lable_name, this->lable_font, this->text_brush,float (x+5),float (y-6));
 		}
 
 		void adddropdown(std::string new_drop)
@@ -85,11 +85,15 @@ namespace Project1 {
 		
 		int get_index(map<int, City*> City_Map, std::string City)
 		{
+			Boolean match = TRUE;
 			int i = 0;
-				while ((strncmp(City_Map[i]->City_Name.c_str(), City.c_str(), City.size()) != 0) && i<City_Map.size())
+			for (i = 0; match && i<City_Map.size(); i++ )
 			{
-				i++;
+					match = strncmp(City_Map[i]->City_Name.c_str(), City.c_str(), City.size());
 			}
+			i--;
+			if (match == TRUE) { i++;}
+			
 			return i;
 		}
 
@@ -172,11 +176,12 @@ namespace Project1 {
 			this->MapArea->BackColor = System::Drawing::SystemColors::Window;
 			this->MapArea->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"MapArea.BackgroundImage")));
 			this->MapArea->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
+			this->MapArea->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->MapArea->Controls->Add(this->label3);
-			this->MapArea->Location = System::Drawing::Point(12, 12);
-			this->MapArea->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->MapArea->Location = System::Drawing::Point(9, 10);
+			this->MapArea->Margin = System::Windows::Forms::Padding(2);
 			this->MapArea->Name = L"MapArea";
-			this->MapArea->Size = System::Drawing::Size(1304, 1082);
+			this->MapArea->Size = System::Drawing::Size(723, 879);
 			this->MapArea->TabIndex = 0;
 			this->MapArea->Click += gcnew System::EventHandler(this, &MyForm::MapArea_Click);
 			this->MapArea->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::MapArea_Paint);
@@ -184,18 +189,19 @@ namespace Project1 {
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(852, 502);
+			this->label3->Location = System::Drawing::Point(639, 408);
+			this->label3->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(0, 16);
+			this->label3->Size = System::Drawing::Size(0, 13);
 			this->label3->TabIndex = 8;
 			// 
 			// AsternCheckBox
 			// 
 			this->AsternCheckBox->AutoSize = true;
-			this->AsternCheckBox->Location = System::Drawing::Point(1325, 226);
-			this->AsternCheckBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->AsternCheckBox->Location = System::Drawing::Point(745, 145);
+			this->AsternCheckBox->Margin = System::Windows::Forms::Padding(2);
 			this->AsternCheckBox->Name = L"AsternCheckBox";
-			this->AsternCheckBox->Size = System::Drawing::Size(71, 20);
+			this->AsternCheckBox->Size = System::Drawing::Size(61, 17);
 			this->AsternCheckBox->TabIndex = 1;
 			this->AsternCheckBox->Text = L"A-Stern";
 			this->AsternCheckBox->UseVisualStyleBackColor = true;
@@ -203,10 +209,10 @@ namespace Project1 {
 			// DijkstraCheckBox
 			// 
 			this->DijkstraCheckBox->AutoSize = true;
-			this->DijkstraCheckBox->Location = System::Drawing::Point(1431, 226);
-			this->DijkstraCheckBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->DijkstraCheckBox->Location = System::Drawing::Point(824, 145);
+			this->DijkstraCheckBox->Margin = System::Windows::Forms::Padding(2);
 			this->DijkstraCheckBox->Name = L"DijkstraCheckBox";
-			this->DijkstraCheckBox->Size = System::Drawing::Size(72, 20);
+			this->DijkstraCheckBox->Size = System::Drawing::Size(61, 17);
 			this->DijkstraCheckBox->TabIndex = 2;
 			this->DijkstraCheckBox->Text = L"Dijkstra";
 			this->DijkstraCheckBox->UseVisualStyleBackColor = true;
@@ -214,10 +220,10 @@ namespace Project1 {
 			// StartButton
 			// 
 			this->StartButton->BackColor = System::Drawing::SystemColors::Control;
-			this->StartButton->Location = System::Drawing::Point(1325, 254);
-			this->StartButton->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->StartButton->Location = System::Drawing::Point(745, 167);
+			this->StartButton->Margin = System::Windows::Forms::Padding(2);
 			this->StartButton->Name = L"StartButton";
-			this->StartButton->Size = System::Drawing::Size(236, 59);
+			this->StartButton->Size = System::Drawing::Size(177, 48);
 			this->StartButton->TabIndex = 3;
 			this->StartButton->Text = L"Start";
 			this->StartButton->UseVisualStyleBackColor = false;
@@ -229,10 +235,10 @@ namespace Project1 {
 			// 
 			this->StartBox->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->StartBox->FormattingEnabled = true;
-			this->StartBox->Location = System::Drawing::Point(1325, 105);
-			this->StartBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->StartBox->Location = System::Drawing::Point(745, 46);
+			this->StartBox->Margin = System::Windows::Forms::Padding(2);
 			this->StartBox->Name = L"StartBox";
-			this->StartBox->Size = System::Drawing::Size(236, 24);
+			this->StartBox->Size = System::Drawing::Size(178, 21);
 			this->StartBox->TabIndex = 4;
 			this->StartBox->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::StartBox_SelectedIndexChanged);
 			// 
@@ -240,46 +246,49 @@ namespace Project1 {
 			// 
 			this->DestinationBox->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->DestinationBox->FormattingEnabled = true;
-			this->DestinationBox->Location = System::Drawing::Point(1325, 176);
-			this->DestinationBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->DestinationBox->Location = System::Drawing::Point(745, 104);
+			this->DestinationBox->Margin = System::Windows::Forms::Padding(2);
 			this->DestinationBox->Name = L"DestinationBox";
-			this->DestinationBox->Size = System::Drawing::Size(236, 24);
+			this->DestinationBox->Size = System::Drawing::Size(178, 21);
 			this->DestinationBox->TabIndex = 5;
 			// 
 			// FromLabel
 			// 
 			this->FromLabel->AutoSize = true;
 			this->FromLabel->BackColor = System::Drawing::Color::Transparent;
-			this->FromLabel->Location = System::Drawing::Point(1321, 74);
+			this->FromLabel->Location = System::Drawing::Point(742, 21);
+			this->FromLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->FromLabel->Name = L"FromLabel";
-			this->FromLabel->Size = System::Drawing::Size(42, 16);
+			this->FromLabel->Size = System::Drawing::Size(33, 13);
 			this->FromLabel->TabIndex = 6;
 			this->FromLabel->Text = L"From:";
 			// 
 			// ToLabel
 			// 
 			this->ToLabel->AutoSize = true;
-			this->ToLabel->Location = System::Drawing::Point(1321, 146);
+			this->ToLabel->Location = System::Drawing::Point(742, 80);
+			this->ToLabel->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->ToLabel->Name = L"ToLabel";
-			this->ToLabel->Size = System::Drawing::Size(28, 16);
+			this->ToLabel->Size = System::Drawing::Size(23, 13);
 			this->ToLabel->TabIndex = 7;
 			this->ToLabel->Text = L"To:";
 			// 
 			// linkLabel1
 			// 
 			this->linkLabel1->AutoSize = true;
-			this->linkLabel1->Location = System::Drawing::Point(1159, 404);
+			this->linkLabel1->Location = System::Drawing::Point(869, 328);
+			this->linkLabel1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->linkLabel1->Name = L"linkLabel1";
-			this->linkLabel1->Size = System::Drawing::Size(0, 16);
+			this->linkLabel1->Size = System::Drawing::Size(0, 13);
 			this->linkLabel1->TabIndex = 8;
 			// 
 			// newMapButton
 			// 
 			this->newMapButton->BackColor = System::Drawing::SystemColors::Control;
-			this->newMapButton->Location = System::Drawing::Point(1337, 1030);
-			this->newMapButton->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->newMapButton->Location = System::Drawing::Point(745, 838);
+			this->newMapButton->Margin = System::Windows::Forms::Padding(2);
 			this->newMapButton->Name = L"newMapButton";
-			this->newMapButton->Size = System::Drawing::Size(241, 64);
+			this->newMapButton->Size = System::Drawing::Size(181, 52);
 			this->newMapButton->TabIndex = 9;
 			this->newMapButton->Text = L"New Map";
 			this->newMapButton->UseVisualStyleBackColor = false;
@@ -299,20 +308,19 @@ namespace Project1 {
 			this->EmptyBox->DropDownStyle = System::Windows::Forms::ComboBoxStyle::Simple;
 			this->EmptyBox->FormattingEnabled = true;
 			this->EmptyBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { L"Berlin" });
-			this->EmptyBox->Location = System::Drawing::Point(2549, 1099);
-			this->EmptyBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->EmptyBox->Location = System::Drawing::Point(1912, 893);
+			this->EmptyBox->Margin = System::Windows::Forms::Padding(2);
 			this->EmptyBox->Name = L"EmptyBox";
-			this->EmptyBox->Size = System::Drawing::Size(12, 25);
+			this->EmptyBox->Size = System::Drawing::Size(10, 21);
 			this->EmptyBox->TabIndex = 10;
 			this->EmptyBox->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::comboBox1_SelectedIndexChanged);
 			// 
 			// richTextBox1
 			// 
 			this->richTextBox1->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->richTextBox1->Location = System::Drawing::Point(1337, 702);
-			this->richTextBox1->Margin = System::Windows::Forms::Padding(4);
+			this->richTextBox1->Location = System::Drawing::Point(745, 571);
 			this->richTextBox1->Name = L"richTextBox1";
-			this->richTextBox1->Size = System::Drawing::Size(239, 322);
+			this->richTextBox1->Size = System::Drawing::Size(179, 262);
 			this->richTextBox1->TabIndex = 12;
 			this->richTextBox1->Text = L"A-Stern:\nKnoten durchlaufen:\t0\nBenöritgte Zeit\t\t0\n\nDjkstra:\nKnoten durchlaufen:\t0"
 				L"\nBenöritgte Zeit\t\t0";
@@ -320,9 +328,9 @@ namespace Project1 {
 			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1593, 1152);
+			this->ClientSize = System::Drawing::Size(985, 927);
 			this->Controls->Add(this->richTextBox1);
 			this->Controls->Add(this->EmptyBox);
 			this->Controls->Add(this->newMapButton);
@@ -336,9 +344,10 @@ namespace Project1 {
 			this->Controls->Add(this->AsternCheckBox);
 			this->Controls->Add(this->MapArea);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
-			this->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"MyForm";
 			this->Text = L"Wegefindung";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->MapArea->ResumeLayout(false);
 			this->MapArea->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errorProvider1))->EndInit();
@@ -354,8 +363,8 @@ namespace Project1 {
 			this->green_line = gcnew Pen(Color::Green);
 			this->blue_line = gcnew Pen(Color::Blue);
 			this->red_point = gcnew SolidBrush(Color::Red);
-			this->lable_font = gcnew System::Drawing::Font("Arial", 8);
-			this->text_brush = gcnew SolidBrush(Color::Black);
+			this->lable_font = gcnew System::Drawing::Font("Arial", 10);
+			this->text_brush = gcnew SolidBrush(Color::Blue);
 			this->text_format = gcnew System::Drawing::StringFormat();
 		}
 		
@@ -398,7 +407,7 @@ namespace Project1 {
 		this->StartBox->Items->Clear();
 		this->DestinationBox->Items->Clear();
 
-
+	
 		//Lex Analyse
 		CParser obj;
 		map<int, City*> LEX_ALL_CITYS;
@@ -416,14 +425,35 @@ namespace Project1 {
 		this->set_adjazenzmatrix(LEX_ADJAZENZMATRIX);
 
 		//draw map and add all citys to dropdown
+
 		for (int i = 0; i < LEX_ALL_CITYS.size(); i++)
 		{
-			this->addCity(LEX_ALL_CITYS[i]);
+			
+			//cout << LEX_ALL_CITYS[i]->City_Name << i << "\n" << "\n";
 			for (int ii = 0; ii < LEX_ALL_CITYS[i]->Neighbours.size(); ii++)
 			{
 				int  Neigh = this->get_index(LEX_ALL_CITYS, LEX_ALL_CITYS[i]->Neighbours[ii]);
-				this->connect_city(LEX_ALL_CITYS[i], LEX_ALL_CITYS[Neigh]);
+				if (Neigh >= LEX_ALL_CITYS.size())
+				{
+					std::cout <<"Nachbarstadt "<< LEX_ALL_CITYS[i]->Neighbours[ii] << " von " << LEX_ALL_CITYS[i]->City_Name <<" wurde nicht gefunden"<< "\n";
+				}
+				else
+				{
+					Boolean nomatch = TRUE;
+					for (int iii = 0; iii < LEX_ALL_CITYS[Neigh]->Neighbours.size() && nomatch; iii++)
+					{
+						nomatch = strncmp( LEX_ALL_CITYS[i]->City_Name.c_str() , LEX_ALL_CITYS[Neigh]->Neighbours[iii].c_str(), LEX_ALL_CITYS[i]->City_Name.size());
+						//cout << LEX_ALL_CITYS[i]->City_Name << " " << LEX_ALL_CITYS[Neigh]->Neighbours[iii] << " " << iii << " "<< nomatch <<endl;
+					}
+					if (nomatch) { cout << LEX_ALL_CITYS[Neigh]->City_Name<< Neigh<<" ist Nachbar von " <<   LEX_ALL_CITYS[i]->City_Name << i << " aber nicht umgekehrt" << endl; }
+					this->connect_city(LEX_ALL_CITYS[i], LEX_ALL_CITYS[Neigh]);
+				}
 			}
+		}		
+		//draw all citys names and dots
+		for (int i = 0; i < LEX_ALL_CITYS.size(); i++)
+		{
+			this->addCity(LEX_ALL_CITYS[i]);
 		}
 	}
 
@@ -456,6 +486,8 @@ namespace Project1 {
 	{
 	
 	}
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+}
 };
 }
 
