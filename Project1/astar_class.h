@@ -3,7 +3,7 @@
 class astar_algo
 {
 public:
-	int Nnodes, cycles;
+	int Nnodes, cycles; //anzahl städte
 	vector<vector<int>> target_routes;
 	chrono::duration<double> elapsed_time;
 
