@@ -5,6 +5,7 @@ class dijkstra_algo
 public:
 	int Nnodes, cycles;
 	vector<vector<int>> target_routes;
+	vector<int> checked_nodes;
 	chrono::duration<double> elapsed_time;
 
 	struct n
@@ -115,6 +116,7 @@ public:
 		for (i = 0; i < Nnodes - 2; i++) {
 			node = node_select();
 			n_info[node].done = 1;
+			checked_nodes.push_back(node);
 			if (node == end) break;
 			for (k = 0; k < Nnodes; k++) {
 				if (!(n_info[k].done == 1)) {
