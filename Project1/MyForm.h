@@ -21,7 +21,7 @@ namespace Project1 {
 	vector<vector<float>> city_positions;
 	vector<vector<float>> adjazenzmatrix;
 	map<int, City*> all_citys;
-
+	Boolean map_existing=FALSE;
 
 	/// <summary>
 	/// Zusammenfassung für MyForm
@@ -114,6 +114,46 @@ namespace Project1 {
 			return i;
 		}
 
+		void drawmap()
+		{
+			if(map_existing)
+			{ 
+				map_area_graph->Clear(System::Drawing::Color::White);
+				this->StartBox->Items->Clear();
+				this->DestinationBox->Items->Clear();
+
+
+				for (int i = 0; i < all_citys.size(); i++)
+				{
+					//cout << LEX_ALL_CITYS[i]->City_Name << i << "\n" << "\n";
+					for (int ii = 0; ii < all_citys[i]->Neighbours.size(); ii++)
+					{
+						int  Neigh = this->get_index(all_citys, all_citys[i]->Neighbours[ii]);
+						if (Neigh >= all_citys.size())
+						{
+							std::cout << "Nachbarstadt " << all_citys[i]->Neighbours[ii] << " von " << all_citys[i]->City_Name << " wurde nicht gefunden" << "\n";
+						}
+						else
+						{
+							Boolean nomatch = TRUE;
+							for (int iii = 0; iii < all_citys[Neigh]->Neighbours.size() && nomatch; iii++)
+							{
+								nomatch = strncmp(all_citys[i]->City_Name.c_str(), all_citys[Neigh]->Neighbours[iii].c_str(), all_citys[i]->City_Name.size());
+								//cout << LEX_ALL_CITYS[i]->City_Name << " " << LEX_ALL_CITYS[Neigh]->Neighbours[iii] << " " << iii << " "<< nomatch <<endl;
+							}
+							if (nomatch) { cout << all_citys[Neigh]->City_Name << Neigh << " ist Nachbar von " << all_citys[i]->City_Name << i << " aber nicht umgekehrt" << endl; }
+							this->connect_city(all_citys[i], all_citys[Neigh]);
+						}
+					}
+				}
+				//draw all citys names and dots
+				for (int i = 0; i < all_citys.size(); i++)
+				{
+					this->addCity(all_citys[i]);
+				}
+			}
+		}
+
 
 	protected:
 		/// <summary>
@@ -135,7 +175,7 @@ namespace Project1 {
 	private: System::Windows::Forms::ComboBox^ DestinationBox;
 	private: System::Windows::Forms::Label^ FromLabel;
 	private: System::Windows::Forms::Label^ ToLabel;
-	private: System::Windows::Forms::Label^ label3;
+
 	private: System::Windows::Forms::LinkLabel^ linkLabel1;
 	private: System::Windows::Forms::Button^ newMapButton;
 	private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
@@ -152,7 +192,10 @@ namespace Project1 {
 	private: SolidBrush^ text_brush;
 	private: System::Drawing::Font^ lable_font;
 	private: System::Drawing::StringFormat^ text_format;
-private: System::Windows::Forms::Panel^ panel1;
+
+private: System::Windows::Forms::Button^ clear_map_button;
+private: System::Windows::Forms::Button^ show_path_button;
+private: System::Windows::Forms::CheckBox^ time_median_check_box;
 	private: System::ComponentModel::IContainer^ components;
 
 	protected:
@@ -173,8 +216,6 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->MapArea = (gcnew System::Windows::Forms::Panel());
-			this->panel1 = (gcnew System::Windows::Forms::Panel());
-			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->AsternCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->DijkstraCheckBox = (gcnew System::Windows::Forms::CheckBox());
 			this->StartButton = (gcnew System::Windows::Forms::Button());
@@ -188,8 +229,9 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->errorProvider1 = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->EmptyBox = (gcnew System::Windows::Forms::ComboBox());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
-			this->MapArea->SuspendLayout();
-			this->panel1->SuspendLayout();
+			this->show_path_button = (gcnew System::Windows::Forms::Button());
+			this->clear_map_button = (gcnew System::Windows::Forms::Button());
+			this->time_median_check_box = (gcnew System::Windows::Forms::CheckBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errorProvider1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -198,7 +240,6 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->MapArea->BackColor = System::Drawing::SystemColors::Window;
 			this->MapArea->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"MapArea.BackgroundImage")));
 			this->MapArea->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-			this->MapArea->Controls->Add(this->panel1);
 			this->MapArea->Location = System::Drawing::Point(12, 12);
 			this->MapArea->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->MapArea->Name = L"MapArea";
@@ -207,31 +248,13 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->MapArea->Click += gcnew System::EventHandler(this, &MyForm::MapArea_Click);
 			this->MapArea->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::MapArea_Paint);
 			// 
-			// panel1
-			// 
-			this->panel1->BackColor = System::Drawing::Color::Transparent;
-			this->panel1->Controls->Add(this->label3);
-			this->panel1->ForeColor = System::Drawing::Color::Transparent;
-			this->panel1->Location = System::Drawing::Point(813, 827);
-			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(121, 83);
-			this->panel1->TabIndex = 9;
-			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(180, 3);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(0, 16);
-			this->label3->TabIndex = 8;
-			// 
 			// AsternCheckBox
 			// 
 			this->AsternCheckBox->AutoSize = true;
 			this->AsternCheckBox->Location = System::Drawing::Point(993, 178);
 			this->AsternCheckBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->AsternCheckBox->Name = L"AsternCheckBox";
-			this->AsternCheckBox->Size = System::Drawing::Size(71, 20);
+			this->AsternCheckBox->Size = System::Drawing::Size(78, 21);
 			this->AsternCheckBox->TabIndex = 1;
 			this->AsternCheckBox->Text = L"A-Stern";
 			this->AsternCheckBox->UseVisualStyleBackColor = true;
@@ -239,10 +262,10 @@ private: System::Windows::Forms::Panel^ panel1;
 			// DijkstraCheckBox
 			// 
 			this->DijkstraCheckBox->AutoSize = true;
-			this->DijkstraCheckBox->Location = System::Drawing::Point(1099, 178);
+			this->DijkstraCheckBox->Location = System::Drawing::Point(1151, 178);
 			this->DijkstraCheckBox->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->DijkstraCheckBox->Name = L"DijkstraCheckBox";
-			this->DijkstraCheckBox->Size = System::Drawing::Size(72, 20);
+			this->DijkstraCheckBox->Size = System::Drawing::Size(77, 21);
 			this->DijkstraCheckBox->TabIndex = 2;
 			this->DijkstraCheckBox->Text = L"Dijkstra";
 			this->DijkstraCheckBox->UseVisualStyleBackColor = true;
@@ -250,7 +273,7 @@ private: System::Windows::Forms::Panel^ panel1;
 			// StartButton
 			// 
 			this->StartButton->BackColor = System::Drawing::SystemColors::Control;
-			this->StartButton->Location = System::Drawing::Point(993, 206);
+			this->StartButton->Location = System::Drawing::Point(992, 237);
 			this->StartButton->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->StartButton->Name = L"StartButton";
 			this->StartButton->Size = System::Drawing::Size(236, 59);
@@ -288,7 +311,7 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->FromLabel->BackColor = System::Drawing::Color::Transparent;
 			this->FromLabel->Location = System::Drawing::Point(989, 26);
 			this->FromLabel->Name = L"FromLabel";
-			this->FromLabel->Size = System::Drawing::Size(42, 16);
+			this->FromLabel->Size = System::Drawing::Size(44, 17);
 			this->FromLabel->TabIndex = 6;
 			this->FromLabel->Text = L"From:";
 			// 
@@ -297,7 +320,7 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->ToLabel->AutoSize = true;
 			this->ToLabel->Location = System::Drawing::Point(989, 98);
 			this->ToLabel->Name = L"ToLabel";
-			this->ToLabel->Size = System::Drawing::Size(28, 16);
+			this->ToLabel->Size = System::Drawing::Size(29, 17);
 			this->ToLabel->TabIndex = 7;
 			this->ToLabel->Text = L"To:";
 			// 
@@ -306,13 +329,13 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->linkLabel1->AutoSize = true;
 			this->linkLabel1->Location = System::Drawing::Point(1159, 404);
 			this->linkLabel1->Name = L"linkLabel1";
-			this->linkLabel1->Size = System::Drawing::Size(0, 16);
+			this->linkLabel1->Size = System::Drawing::Size(0, 17);
 			this->linkLabel1->TabIndex = 8;
 			// 
 			// newMapButton
 			// 
 			this->newMapButton->BackColor = System::Drawing::SystemColors::Control;
-			this->newMapButton->Location = System::Drawing::Point(993, 1031);
+			this->newMapButton->Location = System::Drawing::Point(992, 1029);
 			this->newMapButton->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
 			this->newMapButton->Name = L"newMapButton";
 			this->newMapButton->Size = System::Drawing::Size(241, 64);
@@ -345,7 +368,7 @@ private: System::Windows::Forms::Panel^ panel1;
 			// richTextBox1
 			// 
 			this->richTextBox1->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->richTextBox1->Location = System::Drawing::Point(993, 703);
+			this->richTextBox1->Location = System::Drawing::Point(995, 701);
 			this->richTextBox1->Margin = System::Windows::Forms::Padding(4);
 			this->richTextBox1->Name = L"richTextBox1";
 			this->richTextBox1->Size = System::Drawing::Size(239, 322);
@@ -354,11 +377,49 @@ private: System::Windows::Forms::Panel^ panel1;
 				L"\nBenöritgte Zeit\t\t0";
 			this->richTextBox1->TextChanged += gcnew System::EventHandler(this, &MyForm::richTextBox1_TextChanged);
 			// 
+			// show_path_button
+			// 
+			this->show_path_button->BackColor = System::Drawing::SystemColors::Control;
+			this->show_path_button->Location = System::Drawing::Point(992, 300);
+			this->show_path_button->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->show_path_button->Name = L"show_path_button";
+			this->show_path_button->Size = System::Drawing::Size(236, 59);
+			this->show_path_button->TabIndex = 13;
+			this->show_path_button->Text = L"Show Path";
+			this->show_path_button->UseVisualStyleBackColor = false;
+			this->show_path_button->Click += gcnew System::EventHandler(this, &MyForm::show_path_button_Click);
+			// 
+			// clear_map_button
+			// 
+			this->clear_map_button->BackColor = System::Drawing::SystemColors::Control;
+			this->clear_map_button->Location = System::Drawing::Point(992, 363);
+			this->clear_map_button->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->clear_map_button->Name = L"clear_map_button";
+			this->clear_map_button->Size = System::Drawing::Size(236, 59);
+			this->clear_map_button->TabIndex = 14;
+			this->clear_map_button->Text = L"Clear Path";
+			this->clear_map_button->UseVisualStyleBackColor = false;
+			this->clear_map_button->Click += gcnew System::EventHandler(this, &MyForm::clear_map_button_Click);
+			// 
+			// time_median_check_box
+			// 
+			this->time_median_check_box->AutoSize = true;
+			this->time_median_check_box->Location = System::Drawing::Point(992, 203);
+			this->time_median_check_box->Margin = System::Windows::Forms::Padding(3, 2, 3, 2);
+			this->time_median_check_box->Name = L"time_median_check_box";
+			this->time_median_check_box->Size = System::Drawing::Size(136, 21);
+			this->time_median_check_box->TabIndex = 15;
+			this->time_median_check_box->Text = L"Use Timemedian";
+			this->time_median_check_box->UseVisualStyleBackColor = true;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1247, 1141);
+			this->Controls->Add(this->time_median_check_box);
+			this->Controls->Add(this->clear_map_button);
+			this->Controls->Add(this->show_path_button);
 			this->Controls->Add(this->richTextBox1);
 			this->Controls->Add(this->EmptyBox);
 			this->Controls->Add(this->newMapButton);
@@ -376,9 +437,6 @@ private: System::Windows::Forms::Panel^ panel1;
 			this->Name = L"MyForm";
 			this->Text = L"Wegefindung";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
-			this->MapArea->ResumeLayout(false);
-			this->panel1->ResumeLayout(false);
-			this->panel1->PerformLayout();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errorProvider1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
@@ -430,6 +488,7 @@ private: System::Windows::Forms::Panel^ panel1;
 				cout << dijk_path[ij] << " ";				//dijk_path[]  Weg Ziel -> Start
 			cout << "\nCycles: " << dijk.cycles << "\n";	//dijk.cycles Anzahl Durchläufe
 			cout << "Elapsed time: " << dijk.elapsed_time.count() << " s\n";	//dijk.elapsesd_time.count() benötigte Zeit
+			
 			for (int i = 0; i < dijk_path.size(); i++)
 			{
 				connect_city_dij(all_citys[dijk_path[i - 1]], all_citys[dijk_path[i]]);
@@ -462,80 +521,7 @@ private: System::Windows::Forms::Panel^ panel1;
 				//drawpoint_blue(all_citys[a_star.checked_nodes[i]]->pos[0], all_citys[a_star.checked_nodes[i]]->pos[1]);
 			}
 		}
-			//		
-			//#include <iostream>
-			//#include <string>
-			//#include <stdio.h>
-			//#include <math.h>
-			//#include <vector>
-			//#include <algorithm>
-			//#include <chrono>		//Bib für Zeitmessung, die Zeit ist aber sehr kurz unterschiede sind nicht wirklich gut erkennbar da die Zeit auch gut schwankt
-			//
-			//
-			//#define xxx 10000.0		//def für "Unendlich" in der Verbindungsmatrix
-			//		using namespace std;
-			//
-			//#include "astar_class.h"		//Algorithmen
-			//#include "dijkstra_class.h"
-			//
-			//		void main()
-			//		{
-			//			int city_index_start, city_index_dest;		//index für Start und Ziel Stadt, sollte dann über GUI kommen
-			//			city_index_start = 4;
-			//			city_index_dest = 3;
-			//
-			//			vector<vector<float>> distance_matr =							//Matrix mit Verbindungsinfos, kommt von Matze
-			//			{
-			//			{ 0,xxx,xxx,205,xxx,xxx,284,282,xxx,179,xxx,xxx},
-			//			{xxx, 0,233,xxx,xxx,xxx,119,125,xxx,xxx,xxx,xxx},
-			//			{xxx,233, 0,xxx, 63,264,xxx,208, 83,xxx,xxx,xxx},
-			//			{205,xxx,xxx, 0,xxx,xxx,xxx,xxx,xxx,108,xxx,xxx},
-			//			{xxx,xxx, 63,xxx, 0,xxx,xxx,xxx, 47,xxx,xxx,xxx},
-			//			{xxx,xxx,264,xxx,xxx, 0,xxx,352,189,395,400,217},
-			//			{284,119,xxx,xxx,xxx,xxx, 0,154,xxx,xxx,xxx,xxx},
-			//			{282,125,208,xxx,xxx,352,154, 0,xxx,256,xxx,xxx},
-			//			{xxx,xxx, 83,xxx, 47,189,xxx,xxx, 0,xxx,xxx,xxx},
-			//			{179,xxx,xxx,108,xxx,395,xxx,256,xxx, 0,425,xxx},
-			//			{xxx,xxx,xxx,xxx,xxx,400,xxx,xxx,xxx,425, 0,220},
-			//			{xxx,xxx,xxx,xxx,xxx,217,xxx,xxx,xxx,xxx,220, 0},
-			//			};
-			//
-			//			vector<vector<float>> city_coords =								//Koordinaten der Städte, kommt von Matze
-			//			{
-			//			{115, 110},
-			//			{20, 120},
-			//			{15, 85},
-			//			{130, 70},
-			//			{5, 80},
-			//			{35,45},
-			//			{55, 130},
-			//			{55, 105},
-			//			{15, 65},
-			//			{90,75},
-			//			{90,5},
-			//			{45, 10}
-			//			};
-			//
-			//			astar_algo a_star;			//Objekt des A* Algorithmus anlegen
-			//			dijkstra_algo dijk;			//Objekt des Dijkstra Algorithmus anlegen
-			//
-			//			cout << "A_STAR:\n";
-			//			vector<int> astar_path = a_star.astar(city_index_start, city_index_dest, distance_matr, city_coords);	//Ausführen des A*, Übergabe: Start, Ziel, Verbindungsmatrix, Koordinaten. Rückgabe ist der Vektor mit dem gefunden Weg
-			//
-			//			for (int ij = 0; ij < astar_path.size(); ij++)
-			//				cout << astar_path[ij] << " ";					//astar_path[] enthält jetzt in Umgekehrter Folge den Weg. Ziel -> Start
-			//			cout << "\nCycles: " << a_star.cycles << "\n";		//a_star.cycles ist die Anzahl von Durchläufen bis der Weg gefunden wurde
-			//			cout << "Elapsed time: " << a_star.elapsed_time.count() << " s\n"; //a_star.elapsed_time.count() enthält die dafür benötigte Zeit in sec.
-			//
-			//
-			//
-			//			cout << "DIJKSTRA:\n";
-			//			vector<int> dijk_path = dijk.dijkstra(city_index_start, city_index_dest, distance_matr);	//Ausführen des Dijkstra, Übergabe: Start, Ziel, Verbindungsmatrix. Rückgabe: Vektor mit Weg
-			//
-			//			for (int ij = 0; ij < dijk_path.size(); ij++)
-			//				cout << dijk_path[ij] << " ";				//dijk_path[]  Weg Ziel -> Start
-			//			cout << "\nCycles: " << dijk.cycles << "\n";	//dijk.cycles Anzahl Durchläufe
-			//			cout << "Elapsed time: " << dijk.elapsed_time.count() << " s\n";	//dijk.elapsesd_time.count() benötigte Zeit
+
 	}
 
 	private: System::Void StartBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) 
@@ -563,9 +549,7 @@ private: System::Windows::Forms::Panel^ panel1;
 		}
 
 		//clear map area and dropdown menues
-		map_area_graph->Clear(System::Drawing::Color::White);
-		this->StartBox->Items->Clear();
-		this->DestinationBox->Items->Clear();
+
 
 	
 		//Lex Analyse
@@ -583,39 +567,9 @@ private: System::Windows::Forms::Panel^ panel1;
 		this->set_citys_map(LEX_ALL_CITYS);
 		this->set_city_positions(LEX_ALL_POSITIONS);
 		this->set_adjazenzmatrix(LEX_ADJAZENZMATRIX);
-
+		map_existing = TRUE;
 		//draw map and add all citys to dropdown
-
-		for (int i = 0; i < LEX_ALL_CITYS.size(); i++)
-		{
-			
-			//cout << LEX_ALL_CITYS[i]->City_Name << i << "\n" << "\n";
-			for (int ii = 0; ii < LEX_ALL_CITYS[i]->Neighbours.size(); ii++)
-			{
-				int  Neigh = this->get_index(LEX_ALL_CITYS, LEX_ALL_CITYS[i]->Neighbours[ii]);
-				if (Neigh >= LEX_ALL_CITYS.size())
-				{
-					std::cout <<"Nachbarstadt "<< LEX_ALL_CITYS[i]->Neighbours[ii] << " von " << LEX_ALL_CITYS[i]->City_Name <<" wurde nicht gefunden"<< "\n";
-				}
-				else
-				{
-					Boolean nomatch = TRUE;
-					for (int iii = 0; iii < LEX_ALL_CITYS[Neigh]->Neighbours.size() && nomatch; iii++)
-					{
-						nomatch = strncmp( LEX_ALL_CITYS[i]->City_Name.c_str() , LEX_ALL_CITYS[Neigh]->Neighbours[iii].c_str(), LEX_ALL_CITYS[i]->City_Name.size());
-						//cout << LEX_ALL_CITYS[i]->City_Name << " " << LEX_ALL_CITYS[Neigh]->Neighbours[iii] << " " << iii << " "<< nomatch <<endl;
-					}
-					if (nomatch) { cout << LEX_ALL_CITYS[Neigh]->City_Name<< Neigh<<" ist Nachbar von " <<   LEX_ALL_CITYS[i]->City_Name << i << " aber nicht umgekehrt" << endl; }
-					this->connect_city(LEX_ALL_CITYS[i], LEX_ALL_CITYS[Neigh]);
-				}
-			}
-		}		
-		//draw all citys names and dots
-		for (int i = 0; i < LEX_ALL_CITYS.size(); i++)
-		{
-			this->addCity(LEX_ALL_CITYS[i]);
-		}
-		
+		drawmap();
 	}
 
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) 
@@ -648,6 +602,14 @@ private: System::Windows::Forms::Panel^ panel1;
 	}
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
 	{
+	}
+	private: System::Void show_path_button_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+
+	}
+	private: System::Void clear_map_button_Click(System::Object^ sender, System::EventArgs^ e) 
+	{
+	drawmap();
 	}
 };
 }
