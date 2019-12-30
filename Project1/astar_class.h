@@ -85,6 +85,7 @@ public:
 
 		end_x = coords[end_n][0];
 		end_y = coords[end_n][1];
+		checked_nodes.push_back(start_n);
 
 		for (i = 0; i < Nnodes; i++)
 		{
@@ -149,4 +150,5 @@ public:
 
 		return target_routes[end];
 	}
+
 };

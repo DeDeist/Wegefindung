@@ -78,6 +78,7 @@ public:
 	void init(int start_n, vector<vector<float>>& dist_matr)
 	{
 		int i;
+		checked_nodes.push_back(start_n);
 		for (i = 0; i < Nnodes; i++)
 		{
 			n_info[i].done = 0;
