@@ -157,7 +157,7 @@ map<int, City*> CParser::yyparse()
 							Citys[ind]->set_pos(poses);
 
 						}
-						/*else if (tok == TIME1)// Einlesen der Zeiten von Ort zu Ort
+						else if (tok == TIME1)// Einlesen der Zeiten von Ort zu Ort
 						{
 							vector<float> times;
 							while (tok != 93)
@@ -170,7 +170,7 @@ map<int, City*> CParser::yyparse()
 								}
 							}
 							Citys[ind]->set_Time(times);
-						}*/
+						}
 						else if (tok == NEIGHBOURS1)
 						{
 							vector<string> neighbours;

@@ -139,13 +139,14 @@ vector<vector<float>> Lex_Adjazenzmatrix( map<int, City*>a_map)
 			else if (it != NB.end()) //Traegt Zeit ein
 			{
 
-				//int ind = distance(NB.begin(), it);
+				int ind = distance(NB.begin(), it);
 
+				cout << "Index" << a_map[i]->Time[ind] <<endl;
 				//cout << a_map[i]->City_Name << "--" << a_map[j]->City_Name << endl;
 				int x = (a_map[i]->pos[0] - a_map[j]->pos[0]);
 				int y = (a_map[i]->pos[1] - a_map[j]->pos[1]);
 
-				nxn[i][j] = (int)sqrt(x*x + y*y);
+				nxn[i][j] = (int)(sqrt(x*x + y*y)*(a_map[i]->Time[ind])/10);
 			}
 
 			else // Traegt inf. ein
