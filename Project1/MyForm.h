@@ -177,8 +177,8 @@ namespace Project1 {
 
 	private: System::Windows::Forms::LinkLabel^ linkLabel1;
 	private: System::Windows::Forms::Button^ newMapButton;
-	private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
-	private: System::Windows::Forms::ErrorProvider^ errorProvider1;
+
+
 	private: System::Windows::Forms::ComboBox^ EmptyBox;
 	private: System::Windows::Forms::RichTextBox^ richTextBox1;
 	private: Graphics^ map_area_graph;
@@ -195,6 +195,7 @@ namespace Project1 {
 	private: System::Windows::Forms::Button^ show_path_button;
 	private: System::Windows::Forms::CheckBox^ time_median_check_box;
 	private: System::Windows::Forms::CheckBox^ pathbox;
+private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
 
 	private: System::ComponentModel::IContainer^ components;
 
@@ -213,7 +214,6 @@ namespace Project1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->MapArea = (gcnew System::Windows::Forms::Panel());
 			this->AsternCheckBox = (gcnew System::Windows::Forms::CheckBox());
@@ -225,15 +225,13 @@ namespace Project1 {
 			this->ToLabel = (gcnew System::Windows::Forms::Label());
 			this->linkLabel1 = (gcnew System::Windows::Forms::LinkLabel());
 			this->newMapButton = (gcnew System::Windows::Forms::Button());
-			this->NewMapDialog = (gcnew System::Windows::Forms::OpenFileDialog());
-			this->errorProvider1 = (gcnew System::Windows::Forms::ErrorProvider(this->components));
 			this->EmptyBox = (gcnew System::Windows::Forms::ComboBox());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
 			this->show_path_button = (gcnew System::Windows::Forms::Button());
 			this->clear_map_button = (gcnew System::Windows::Forms::Button());
 			this->time_median_check_box = (gcnew System::Windows::Forms::CheckBox());
 			this->pathbox = (gcnew System::Windows::Forms::CheckBox());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errorProvider1))->BeginInit();
+			this->NewMapDialog = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->SuspendLayout();
 			// 
 			// MapArea
@@ -248,6 +246,7 @@ namespace Project1 {
 			this->MapArea->TabIndex = 0;
 			this->MapArea->Click += gcnew System::EventHandler(this, &MyForm::MapArea_Click);
 			this->MapArea->Paint += gcnew System::Windows::Forms::PaintEventHandler(this, &MyForm::MapArea_Paint);
+			this->MapArea->MouseDown += gcnew System::Windows::Forms::MouseEventHandler(this, &MyForm::MapArea_MouseDown_1);
 			// 
 			// AsternCheckBox
 			// 
@@ -348,15 +347,6 @@ namespace Project1 {
 			this->newMapButton->UseVisualStyleBackColor = false;
 			this->newMapButton->Click += gcnew System::EventHandler(this, &MyForm::newMapButton_Click);
 			// 
-			// NewMapDialog
-			// 
-			this->NewMapDialog->FileName = L"NewMapDialog";
-			this->NewMapDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &MyForm::NewMapDialog_FileOk);
-			// 
-			// errorProvider1
-			// 
-			this->errorProvider1->ContainerControl = this;
-			// 
 			// EmptyBox
 			// 
 			this->EmptyBox->DropDownStyle = System::Windows::Forms::ComboBoxStyle::Simple;
@@ -426,6 +416,11 @@ namespace Project1 {
 			this->pathbox->Text = L"Show Path";
 			this->pathbox->UseVisualStyleBackColor = true;
 			// 
+			// NewMapDialog
+			// 
+			this->NewMapDialog->FileName = L"NewMapDialog";
+			this->NewMapDialog->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &MyForm::NewMapDialog_FileOk);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -452,7 +447,6 @@ namespace Project1 {
 			this->Name = L"MyForm";
 			this->Text = L"Wegefindung";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->errorProvider1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -611,6 +605,7 @@ namespace Project1 {
 	{
 		Point mouse_position = MapArea->PointToClient(Cursor->Position);
 		std::cout <<mouse_position.X <<","<< mouse_position.Y<< "\n";
+		
 	}
 	private: System::Void StartButton_MouseHover(System::Object^ sender, System::EventArgs^ e) 
 	{
@@ -634,6 +629,50 @@ namespace Project1 {
 	private: System::Void clear_map_button_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 	drawmap();
+	}
+
+	private: System::Void MapArea_MouseDown_1(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) 
+	{
+		if (e->Button == System::Windows::Forms::MouseButtons::Right)
+		{
+			BOOLEAN nomatch = TRUE;
+			Point mouse_position = MapArea->PointToClient(Cursor->Position);
+			int i = 0;
+			for ( i = 0; i < all_citys.size() && nomatch; i++)
+			{
+				cout << i << endl;
+				if ((all_citys[i]->pos[0]-5) < mouse_position.X && mouse_position.X < (all_citys[i]->pos[0] + 5))
+				{
+					cout << all_citys[i]->pos[0] - 5 <<"  "<< mouse_position.X<<"  "<< all_citys[i]->pos[0] + 5 << endl;
+					if (all_citys[i]->pos[1] - 5 < mouse_position.Y && mouse_position.Y < (all_citys[i]->pos[1] + 5))
+					{
+						cout << i << endl;
+						nomatch = FALSE;
+					}
+				}
+			}
+			this->DestinationBox->SelectedIndex = (i-1);
+		}
+		if (e->Button == System::Windows::Forms::MouseButtons::Left)
+		{
+			BOOLEAN nomatch = TRUE;
+			Point mouse_position = MapArea->PointToClient(Cursor->Position);
+			int i = 0;
+			for (i = 0; i < all_citys.size() && nomatch; i++)
+			{
+				cout << i << endl;
+				if ((all_citys[i]->pos[0] - 5) < mouse_position.X && mouse_position.X < (all_citys[i]->pos[0] + 5))
+				{
+					cout << all_citys[i]->pos[0] - 5 << "  " << mouse_position.X << "  " << all_citys[i]->pos[0] + 5 << endl;
+					if (all_citys[i]->pos[1] - 5 < mouse_position.Y && mouse_position.Y < (all_citys[i]->pos[1] + 5))
+					{
+						cout << i << endl;
+						nomatch = FALSE;
+					}
+				}
+			}
+			this->StartBox->SelectedIndex = (i - 1);
+		}
 	}
 };
 }
