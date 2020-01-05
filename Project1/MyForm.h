@@ -651,6 +651,8 @@ private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
 					}
 				}
 			}
+			if (all_citys.size() == i)
+				return;
 			this->DestinationBox->SelectedIndex = (i-1);
 		}
 		if (e->Button == System::Windows::Forms::MouseButtons::Left)
@@ -671,6 +673,8 @@ private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
 					}
 				}
 			}
+			if (all_citys.size() == i)
+				return;
 			this->StartBox->SelectedIndex = (i - 1);
 		}
 	}
