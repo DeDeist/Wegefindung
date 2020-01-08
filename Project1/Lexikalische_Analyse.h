@@ -22,10 +22,10 @@ const int STRING1 = 3;
 const int IDENTIFIER = 4;
 const int INTEGER1 = 5;
 const int TOKENSTART = 300;
-const int TIME1 = 299;
-const int POSE1 = 298;
-const int NEIGHBOURS1 = 297;
-const int NAME1 = 296;
+const int TIME1 = 301;
+const int POSE1 = 302;
+const int NEIGHBOURS1 = 303;
+const int NAME1 = 304;
 
 class CParser
 {
@@ -111,91 +111,71 @@ Funktion zur Erstellung der Map im Format: map<std::string, City*>
 map<int, City*> CParser::yyparse()
 {
 	map<int, City*> Citys;
+	vector<float> times;
+	vector<float> poses;
+	vector<string> neighbours;
 	string NAME;
 	int ind = 0;
 	int tok;
+	int PARSE_STATE = 0;
 	if (prflag)fprintf(IP_List, "%5d ", (int)IP_LineNumber);
-	
-	tok = yylex();
 
-	while (tok != 0)   
+	while ((tok = yylex()) != 0)
 	{
-
-
-		if (tok == NAME1)
+		//printf("%d ", tok);
+		if (tok == INTEGER1)
 		{
-			tok = yylex();
-
-			while (tok != IDENTIFIER)
+			if (PARSE_STATE == TIME1)
 			{
-				tok = yylex();
+				times.push_back(yylval.i);
+			};
 
-				if (tok == IDENTIFIER)
-				{
-					NAME = yylval.s;
-					
-					Citys.insert(make_pair(ind, new City()));  // Erstellt Spalte in der Map: "All_Citys" in der zum einen Der Name der Stadt und dessen Instanz abgelegt sind
-					Citys[ind]->set_City_Name(NAME);// Name der Stadt in das Objekt schreiben
-					
-					while (tok != 0 && tok != 125)
-					{
-						tok = yylex();
-
-						if (tok == POSE1) // Einlesen der Position
-						{
-							vector<float> poses;
-							while (tok != 93)
-							{
-								tok = yylex();
-								if (tok == INTEGER1)
-								{
-
-									poses.push_back(yylval.i);
-									
-								}
-							}
-							Citys[ind]->set_pos(poses);
-
-						}
-						else if (tok == TIME1)// Einlesen der Zeiten von Ort zu Ort
-						{
-							vector<float> times;
-							while (tok != 93)
-							{
-
-								tok = yylex();
-								if (tok == INTEGER1)
-								{
-									times.push_back(yylval.i);
-								}
-							}
-							Citys[ind]->set_Time(times);
-						}
-						else if (tok == NEIGHBOURS1)
-						{
-							vector<string> neighbours;
-							while (tok != 93)
-							{
-
-								tok = yylex();
-								if (tok == IDENTIFIER)
-								{
-									neighbours.push_back(yylval.s);
-								}
-							}
-							Citys[ind]->set_neighbours(neighbours);
-						}
-						else if (tok == 125) break;
-						
-					};
-					ind++;
-					break;
-
-				}
+			if (PARSE_STATE == POSE1)
+			{
+				poses.push_back(yylval.i);
 			};
 		}
-		
-		tok = yylex();
+		else
+			if (tok == IDENTIFIER)
+			{
+				if (PARSE_STATE == NAME1)
+				{
+					NAME = yylval.s;
+
+					Citys.insert(make_pair(ind, new City()));  // Erstellt Spalte in der Map: "All_Citys" in der zum einen Der Name der Stadt und dessen Instanz abgelegt sind
+
+
+				};
+				if (PARSE_STATE == NEIGHBOURS1)
+				{
+					neighbours.push_back(yylval.s);
+				};
+			}
+			else
+				if (tok >= TOKENSTART)
+				{
+					//cout << PARSE_STATE << endl;
+					if (PARSE_STATE == TIME1)
+					{
+						Citys[ind]->set_City_Name(NAME);// Name der Stadt in das Objekt schreiben
+						Citys[ind]->set_pos(poses);
+						Citys[ind]->set_neighbours(neighbours);
+						Citys[ind]->set_Time(times);
+						ind++;
+						times.clear();
+						poses.clear();
+						neighbours.clear();
+					};
+
+					PARSE_STATE = tok;
+
+
+
+				}
+				else
+				{
+				}
+
 	}
 	return Citys;
 }
