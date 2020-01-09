@@ -491,7 +491,8 @@ private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
 			cout << "Dijkstra ausgewählt" << endl;
 			dijkstra_algo dijk;
 			cout << "DIJKSTRA:\n";
-			vector<int> dijk_path = dijk.dijkstra(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix);	//Ausführen des Dijkstra, Übergabe: Start, Ziel, Verbindungsmatrix. Rückgabe: Vektor mit Weg
+			bool median_dijkstra = false;
+			vector<int> dijk_path = dijk.dijkstra(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix, median_dijkstra);	//Ausführen des Dijkstra, Übergabe: Start, Ziel, Verbindungsmatrix. Rückgabe: Vektor mit Weg
 			
 			for (int ij = 0; ij < dijk_path.size(); ij++)
 				cout << dijk_path[ij] << " ";				//dijk_path[]  Weg Ziel -> Start
@@ -512,9 +513,9 @@ private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
 		{
 			cout << "A-Stern ausgewählt" << endl;
 			astar_algo a_star;
-
 			cout << "A_STAR:\n";
-			vector<int> astar_path = a_star.astar(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix, city_positions);	//Ausführen des A*, Übergabe: Start, Ziel, Verbindungsmatrix, Koordinaten. Rückgabe ist der Vektor mit dem gefunden Weg
+			bool median_aster = true;
+			vector<int> astar_path = a_star.astar(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix, city_positions, median_aster);	//Ausführen des A*, Übergabe: Start, Ziel, Verbindungsmatrix, Koordinaten. Rückgabe ist der Vektor mit dem gefunden Weg
 			
 			for (int ij = 0; ij < astar_path.size(); ij++)
 				cout << astar_path[ij] << " ";					//astar_path[] enthält jetzt in Umgekehrter Folge den Weg. Ziel -> Start
