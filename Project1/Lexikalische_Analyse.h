@@ -143,8 +143,6 @@ map<int, City*> CParser::yyparse()
 					NAME = yylval.s;
 
 					Citys.insert(make_pair(ind, new City()));  // Erstellt Spalte in der Map: "All_Citys" in der zum einen Der Name der Stadt und dessen Instanz abgelegt sind
-
-
 				};
 				if (PARSE_STATE == NEIGHBOURS1)
 				{
@@ -154,8 +152,11 @@ map<int, City*> CParser::yyparse()
 			else
 				if (tok >= TOKENSTART)
 				{
-					//cout << PARSE_STATE << endl;
-					if (PARSE_STATE == TIME1)
+					PARSE_STATE = tok;
+				}
+				else
+				{
+					if (tok == 125)
 					{
 						Citys[ind]->set_City_Name(NAME);// Name der Stadt in das Objekt schreiben
 						Citys[ind]->set_pos(poses);
@@ -166,19 +167,12 @@ map<int, City*> CParser::yyparse()
 						poses.clear();
 						neighbours.clear();
 					};
-
-					PARSE_STATE = tok;
-
-
-
-				}
-				else
-				{
 				}
 
 	}
 	return Citys;
 }
+
 //------------------------------------------------------------------------
 /*
 * Parse File:
