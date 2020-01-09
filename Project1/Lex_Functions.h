@@ -86,6 +86,12 @@ void Lex_Ausgabe_Stadt(unsigned int ind, map<int, City*>a_map)
 		cout << a_map[ind]->Neighbours[i] << " ";
 	}
 	cout << "}" << endl;
+	cout << "Time: {";// Liste der Zeitfaktoren
+	for (vector<int>::size_type i = 0; i < a_map[ind]->Time.size(); ++i)
+	{
+		cout << a_map[ind]->Time[i] << " ";
+	}
+	cout << "}" << endl;
 }
 
 
