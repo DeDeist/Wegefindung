@@ -16,7 +16,7 @@
 using namespace System;
 using namespace std;
 
-[STAThreadAttribute]
+[STAThreadAttribute]												//Benötigt für Windows Forms
 
 int main()
 {

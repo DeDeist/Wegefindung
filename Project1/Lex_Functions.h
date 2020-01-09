@@ -14,14 +14,14 @@ vector<vector<float>> Lex_Positions(map<int, City*>);
 // ihr Nasen
 
 /*
-Funktion zur Erstellung der nxn-Adjazenzmatrix f¸r die Algorithmen
+Funktion zur Erstellung der nxn-Adjazenzmatrix f√ºr die Algorithmen
 
--> bekommt map im Format: map<std::string, City*> ¸bergeben die alle eingelesenen St‰dte enth‰lt
+-> bekommt map im Format: map<std::string, City*> √ºbergeben die alle eingelesenen St√§dte enth√§lt
 
--- Dynamisch erstellter Vector mit allen St‰dtenamen
--- Kann durch einkommentieren von: "std::sort(all.begin(), all.end());" auch sortiert zur¸ckgegeben werden
+-- Dynamisch erstellter Vector mit allen St√§dtenamen
+-- Kann durch einkommentieren von: "std::sort(all.begin(), all.end());" auch sortiert zur√ºckgegeben werden
 
-<- gibt Vector mit allen St‰dtenamen der ¸bergebenen Map zur¸ck
+<- gibt Vector mit allen St√§dtenamen der √ºbergebenen Map zur√ºck
 */
 
 
@@ -70,7 +70,7 @@ vector<vector<float>> Lex_Positions(map<int, City*> a_map)
 /*
 Funktion zur Ausgabe einer bestimmten Stadt
 
--> bekommt einen String (St‰dtename) und eine map im Format: map<std::string, City*>, die alle eingelesenen St‰dte enth‰lt ¸bergeben
+-> bekommt einen String (St√§dtename) und eine map im Format: map<std::string, City*>, die alle eingelesenen St√§dte enth√§lt √ºbergeben
 
 */
 
@@ -97,16 +97,16 @@ void Lex_Ausgabe_Stadt(unsigned int ind, map<int, City*>a_map)
 
 
 /*
-Funktion zur Erstellung der nxn-Adjazenzmatrix f¸r die Algorithmen 
+Funktion zur Erstellung der nxn-Adjazenzmatrix f√ºr die Algorithmen 
 
--> bekommt map im Format: map<std::string, City*> ¸bergeben die alle eingelesenen St‰dte enth‰lt
+-> bekommt map im Format: map<std::string, City*> √ºbergeben die alle eingelesenen St√§dte enth√§lt
 
--- Dynamische Anpassung der Vektoren an die Anzahl der St‰dte
--- Tr‰gt die Abst‰nde zu den n‰chsten Nachbarn ein
--- Tr‰gt xxx (10000) ein wenn eine Stadt kein Nachbar ist
--- Tr‰gt 0 auf der Diagonalen ein (Fall Bsp: Berlin - Berlin )
+-- Dynamische Anpassung der Vektoren an die Anzahl der St√§dte
+-- Tr√§gt die Abst√§nde zu den n√§chsten Nachbarn ein
+-- Tr√§gt xxx (10000) ein wenn eine Stadt kein Nachbar ist
+-- Tr√§gt 0 auf der Diagonalen ein (Fall Bsp: Berlin - Berlin )
 
-<- gibt Adjazenzmatrix zur¸ck
+<- gibt Adjazenzmatrix zur√ºck
 */
 
 vector<vector<float>> Lex_Adjazenzmatrix( map<int, City*>a_map)
@@ -117,7 +117,7 @@ vector<vector<float>> Lex_Adjazenzmatrix( map<int, City*>a_map)
 
 	All_City_Names = Lex_Drop_Down(a_map);
 
-	int n = All_City_Names.size(); // Naechste 4 Zeilen: Dynamische Anpassung der an den Algorithmus zu ¸bergebenden Map
+	int n = All_City_Names.size(); // Naechste 4 Zeilen: Dynamische Anpassung der an den Algorithmus zu √ºbergebenden Map
 	
 	nxn.resize(n);
 

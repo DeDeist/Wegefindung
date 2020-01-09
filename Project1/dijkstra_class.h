@@ -5,6 +5,7 @@ class dijkstra_algo
 public:
 	int Nnodes, cycles;
 	vector<vector<int>> target_routes;
+	vector<int> checked_nodes;
 	chrono::duration<double> elapsed_time;
 
 	struct n
@@ -17,6 +18,9 @@ public:
 
 	void set_size(int N)
 	{
+		target_routes.clear();
+		checked_nodes.clear();
+		n_info.clear();
 		Nnodes = N;
 		n_info.resize(N);
 		target_routes.resize(N);
@@ -77,6 +81,7 @@ public:
 	void init(int start_n, vector<vector<float>>& dist_matr)
 	{
 		int i;
+		checked_nodes.push_back(start_n);
 		for (i = 0; i < Nnodes; i++)
 		{
 			n_info[i].done = 0;
@@ -101,37 +106,49 @@ public:
 		return minpos;
 	}
 
-	vector<int> dijkstra(int start_n, int end, vector<vector<float>>& dist_matr)
+	vector<int> dijkstra(int start_n, int end, vector<vector<float>>& dist_matr, bool median)
 	{
-		int Nodes = dist_matr.size();
-		set_size(Nodes);
-		int i, node, k;
-		int d;
-		init(start_n, dist_matr);
+		int Nodes, i, j, node, k, d;
+		Nodes = dist_matr.size();
+		elapsed_time.zero();
 
-		cycles = 0;
+		if (median == true) {
+			j = 10000;
+		}
+		else {
+			j = 1;
+		}
+
 		auto start = chrono::high_resolution_clock::now();
+		for (int n = 0; n < j; n++) {
 
-		for (i = 0; i < Nnodes - 2; i++) {
-			node = node_select();
-			n_info[node].done = 1;
-			if (node == end) break;
-			for (k = 0; k < Nnodes; k++) {
-				if (!(n_info[k].done == 1)) {
-					d = n_info[node].dist + dist_matr[node][k];
-					if (d < n_info[k].dist) {
-						n_info[k].dist = d;
-						n_info[k].parent_node = node;
+			set_size(Nodes);
+			init(start_n, dist_matr);
+
+			cycles = 0;
+			
+
+			for (i = 0; i < Nnodes - 2; i++) {
+				node = node_select();
+				n_info[node].done = 1;
+				checked_nodes.push_back(node);
+				if (node == end) break;
+				for (k = 0; k < Nnodes; k++) {
+					if (!(n_info[k].done == 1)) {
+						d = n_info[node].dist + dist_matr[node][k];
+						if (d < n_info[k].dist) {
+							n_info[k].dist = d;
+							n_info[k].parent_node = node;
+						}
 					}
 				}
 			}
+			cycles = i + 1;
+			path_all();
 		}
-		cycles = i+1;
-		path_all();
-
 		auto finish = chrono::high_resolution_clock::now();
-		elapsed_time = finish - start;
-
+		elapsed_time += finish - start;
+		elapsed_time = elapsed_time / j;
 		return target_routes[end];
 	}
 };
