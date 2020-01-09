@@ -126,19 +126,19 @@ public:
 		elapsed_time.zero();
 
 		if (median == true) {
-			j = 100;
+			j = 10000;
 		}
 		else {
 			j = 1;
 		}
-		
+		auto start = chrono::high_resolution_clock::now();
 		for (int n = 0; n < j; n++) {
 
 			set_size(Nodes);
 			init(start_n, dist_matr, coords, end);
 
 			cycles = 0;
-			auto start = chrono::high_resolution_clock::now();
+			//cout << n << endl;
 
 			for (i = 0; i < Nnodes - 2; i++) {
 				node = node_select();
@@ -158,9 +158,10 @@ public:
 			cycles = i + 1;
 			path_all();
 
-			auto finish = chrono::high_resolution_clock::now();
-			elapsed_time += finish - start;
+			
 		}
+		auto finish = chrono::high_resolution_clock::now();
+		elapsed_time += finish - start;
 		elapsed_time = elapsed_time / j;
 		return target_routes[end];
 	}
