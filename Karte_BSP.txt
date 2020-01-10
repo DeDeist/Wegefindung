@@ -1,0 +1,6 @@
+Name: Flensburg 	{ Pose=[278,32], Neighbours = [Kiel], Time = [10]}
+Name: Kiel		{ Pose=[321,88], Neighbours = [Flensburg,Hamburg,Luebeck], Time = [10,10,10]}
+Name: Heide		{ Pose=[251,93], Neighbours = [Hamburg], Time = [10]}
+Name: Hamburg		{ Pose=[321,164], Neighbours = [Heide,Kiel,Luebeck,Schwerin], Time = [10,10,10,10]}
+Name: Luebeck		{ Pose=[359,133], Neighbours = [Hamburg,Kiel], Time = [10,10]}
+Name: Schwerin		{ Pose=[404,163], Neighbours = [Hamburg], Time = [10]}
