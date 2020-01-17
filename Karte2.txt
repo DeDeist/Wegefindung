@@ -63,5 +63,6 @@ Name: Muenchen		{ Pose=[425,783], Neighbours = [Ulm,Nuernberg,Regensburg,Passau,
 Name: Regensburg	{ Pose=[465,681], Neighbours = [Nuernberg,Hof,Passau,Muenchen], Time = [10,10,10,10]}
 Name: Passau		{ Pose=[570,719], Neighbours = [Regensburg,Muenchen], Time = [10,10]}
 Name: Rosenheim		{ Pose=[471,815], Neighbours = [Muenchen], Time = [10]}
-Name: Garmisch-Partenkirchen { Pose=[391,856], Neighbours = [Muenchen], Time = [10]}
 Name: Frankfurt-Oder	{ Pose=[624,295], Neighbours = [Berlin], Time = [10]}
+Name: Garmisch-Partenkirchen { Pose=[391,856], Neighbours = [Muenchen], Time = [10]}
+

@@ -37,31 +37,37 @@ namespace Project1 {
 		}
 
 	private:
+		//Funktion zeichnet roten Kreis an übergebene Koordinaten
 		void drawpoint(int x, int y)
 		{
 			this->map_area_graph ->FillEllipse(red_point, x, y, 10, 10);
 		}
 
+		//Funktion zeichnet blauen Kreis an übergebene Koordinaten
 		void drawpoint_blue(int x, int y)
 		{
 			this->map_area_graph->FillEllipse(blue_point, x, y, 10, 10);
 		}
 
+		//Von Lex eingelesen Karte wird abgespeichert
 		void set_citys_map(map<int, City*> set_map)
 		{
 			all_citys = set_map;
 		}
 
+		//Von Lex eingelesen Adjazenzmatrix wird abgespeichert
 		void set_adjazenzmatrix(vector<vector<float>> set_adja)
 		{
 			adjazenzmatrix = set_adja;
 		}
 
+		//Von Lex eingeleser Städtekoordinaten-Vektor wird abgespeichert
 		void set_city_positions(vector<vector<float>> set_city_pos)
 		{
 			city_positions = set_city_pos;
 		}
 
+		//Zeichnet den Punkt einer Stadt und schreibt den Namen daneben
 		void drawpointandlabel(int x, int y, std::string lable_name)
 		{
 			System::String^ sys_str_lable_name = gcnew String(lable_name.c_str());
@@ -69,12 +75,14 @@ namespace Project1 {
 			map_area_graph->DrawString(sys_str_lable_name, this->lable_font, this->text_brush,float (x+5),float (y-6));
 		}
 
+		//Zeichnet übergebene Zahl an übergebene Koordinaten
 		void drawnumber(int number, int x, int y)
 		{
 			System::String^ sys_str_number = gcnew String(System::Convert::ToString(number+1));
 			map_area_graph->DrawString(sys_str_number, this->lable_font, this->text_brush, float(x-5), float(y + 10));
 		}
 
+		//Fügt übergebenen String als neuen Punkt im Drop-Down-Menü von Start und Zielstadt hinzu
 		void adddropdown(std::string new_drop)
 		{
 			System::String^ sys_str = gcnew String(new_drop.c_str());
@@ -82,33 +90,40 @@ namespace Project1 {
 			this->DestinationBox->Items->AddRange(gcnew cli::array< System::Object^  >(1) { sys_str });
 		}
 
+		//Zeichnet Punkt und Namen einer Stadt und fügt den Namen noch zu den Drop-Down Menüs hinzu
 		void addCity(City* new_city)
 		{
 			drawpointandlabel(new_city->pos[0], new_city->pos[1], new_city->City_Name);
 			adddropdown(new_city->City_Name);
 		}
 
+		//Verbindet Städte mit schwarzer Linie
 		void connect_city(City* one, City* two)
 		{
 			map_area_graph->DrawLine(black_line, one->pos[0], one->pos[1], two->pos[0], two->pos[1]);
 		}
 		
+		//Verbindet Städte mit roter Linie. Wird nur während des A-Stern Algorithums aufgerufen
 		void connect_city_astern(City* one, City* two)
 		{
 			map_area_graph->DrawLine(red_line, one->pos[0], one->pos[1], two->pos[0], two->pos[1]);
 		}
 
+		//Verbindet Städte mit Grüner Linie. Wird nur während des Dijkstra Algorithums aufgerufen
 		void connect_city_dij(City* one, City* two)
 		{
 			map_area_graph->DrawLine(green_line, one->pos[0], one->pos[1], two->pos[0], two->pos[1]);
 		}
 
+		//Sucht den Index eines übergebene Stadtnamens in der abgespeicherten City-Map
 		int get_index(map<int, City*> City_Map, std::string City)
 		{
 			Boolean nomatch = TRUE;
 			int i = 0;
+			//Durchläuft komplette City-Map
 			for (i = 0; nomatch && i<City_Map.size(); i++ )
 			{
+					//Vergleicht übergebenen Stadtnamen mit dem der Aktuellaufgerufenen
 					nomatch = strncmp(City_Map[i]->City_Name.c_str(), City.c_str(), City.size());
 			}
 			i--;
@@ -121,13 +136,17 @@ namespace Project1 {
 		{
 			if(map_existing)
 			{ 
+				//Karte wird mit weiß übermalt
 				map_area_graph->Clear(System::Drawing::Color::White);
+
+				//Durchläuft komplette City-Map
 				for (int i = 0; i < all_citys.size(); i++)
 				{
-				
+					//Durchläuft alle Nachbern der aktuellen Stadt
 					for (int ii = 0; ii < all_citys[i]->Neighbours.size(); ii++)
 					{
 						int  Neigh = this->get_index(all_citys, all_citys[i]->Neighbours[ii]);
+						//Überprüfung ob Nachbarstadt auch in der City-Map vorhanden
 						if (Neigh >= all_citys.size())
 						{
 							std::cout << "Nachbarstadt " << all_citys[i]->Neighbours[ii] << " von " << all_citys[i]->City_Name << " wurde nicht gefunden" << "\n";
@@ -135,16 +154,24 @@ namespace Project1 {
 						else
 						{
 							Boolean nomatch = TRUE;
+							//Überprüfung ob Aktuelle Stadt auch Nachbar der gefundene Nachbarstadt ist
 							for (int iii = 0; iii < all_citys[Neigh]->Neighbours.size() && nomatch; iii++)
 							{
 								nomatch = strncmp(all_citys[i]->City_Name.c_str(), all_citys[Neigh]->Neighbours[iii].c_str(), all_citys[i]->City_Name.size());
 							}
-							if (nomatch) { cout << all_citys[Neigh]->City_Name << Neigh << " ist Nachbar von " << all_citys[i]->City_Name << i << " aber nicht umgekehrt" << endl; }
-							this->connect_city(all_citys[i], all_citys[Neigh]);
+							if (nomatch) 
+							{ 
+								cout << all_citys[Neigh]->City_Name << Neigh << " ist Nachbar von " << all_citys[i]->City_Name << i << " aber nicht umgekehrt" << endl; 
+							}
+							else
+							{
+								//Verbinden der Städte
+								this->connect_city(all_citys[i], all_citys[Neigh]);
+							}
 						}
 					}
 				}
-				//draw all citys names and dots
+				//Durchläuft gesamte City-Map und Zeichnet alle Städtenamen und Punkte
 				for (int i = 0; i < all_citys.size(); i++)
 				{ 
 				drawpointandlabel(all_citys[i]->pos[0], all_citys[i]->pos[1], all_citys[i]->City_Name);
@@ -174,11 +201,8 @@ namespace Project1 {
 	private: System::Windows::Forms::ComboBox^ DestinationBox;
 	private: System::Windows::Forms::Label^ FromLabel;
 	private: System::Windows::Forms::Label^ ToLabel;
-
 	private: System::Windows::Forms::LinkLabel^ linkLabel1;
 	private: System::Windows::Forms::Button^ newMapButton;
-
-
 	private: System::Windows::Forms::ComboBox^ EmptyBox;
 	private: System::Windows::Forms::RichTextBox^ richTextBox1;
 	private: Graphics^ map_area_graph;
@@ -196,12 +220,10 @@ namespace Project1 {
 	private: System::Windows::Forms::CheckBox^ time_median_check_box;
 	private: System::Windows::Forms::CheckBox^ pathbox;
 	private: System::Windows::Forms::OpenFileDialog^ NewMapDialog;
-
 	private: System::Windows::Forms::Label^ astar_nodes;
 	private: System::Windows::Forms::Label^ astar_time;
 	private: System::Windows::Forms::Label^ dijk_time;
 	private: System::Windows::Forms::Label^ dijk_nodes;
-
 	private: System::ComponentModel::IContainer^ components;
 
 	protected:
@@ -502,7 +524,9 @@ namespace Project1 {
 
 		}
 #pragma endregion
-		void InitializeDrwatools(void)
+
+	//Zeichentools werden zumm Zeichnen Initialisiert. z.B. Stift und Pinsel für Linien bzw. Kreise
+	void InitializeDrwatools(void)
 		{
 			this->map_area_graph = MapArea->CreateGraphics();
 			this->black_line = gcnew Pen(Color::Black);
@@ -520,8 +544,11 @@ namespace Project1 {
 	{
 		
 	}
+
+	//Starten des Algorithmus
 	private: System::Void StartButton_Click(System::Object^ sender, System::EventArgs^ e)
 	{
+		//Überprüfung ob Start und Ziel ausgewählt sind
 		if (StartBox->SelectedIndex == -1)
 		{
 			MessageBox::Show("Wählen Sie einen Startort aus.");
@@ -534,8 +561,8 @@ namespace Project1 {
 			//cout << "Wählen Sie einen Zielort aus." << endl;
 			return;
 		}
-
-		if (!(DijkstraCheckBox->Checked ) && (AsternCheckBox->Checked==0))
+		//Überprüfung ob Algorithmus ausgewählt ist
+		if (!(DijkstraCheckBox->Checked ) && !(AsternCheckBox->Checked))
 		{
 			MessageBox::Show("Wählen Sie einen Algorithmus aus.");
 			//cout << "Wählen Sie einen Zielort aus." << endl;
@@ -543,34 +570,36 @@ namespace Project1 {
 
 		}
 
+		//Neu zeichenen der gesamten Karte
 		drawmap();
+
 		if (DijkstraCheckBox->Checked)
 		{
-			//cout << "Dijkstra ausgewählt" << endl;
+			//Objekt erstellen und Start und Ziel übergeben
 			dijkstra_algo dijk;
-			//cout << "DIJKSTRA:\n";
-			//bool median_dijkstra = false;
 			vector<int> dijk_path = dijk.dijkstra(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix, time_median_check_box->Checked);	//Ausführen des Dijkstra, Übergabe: Start, Ziel, Verbindungsmatrix. Rückgabe: Vektor mit Weg
-			//cout << time_median_check_box->Checked << endl;
-			//for (int ij = 0; ij < dijk_path.size(); ij++)
-			//	cout << dijk_path[ij] << " ";				//dijk_path[]  Weg Ziel -> Start
-			//cout << "\nCycles: " << dijk.cycles << "\n";	//dijk.cycles Anzahl Durchläufe
-			//cout << "Elapsed time: " << dijk.elapsed_time.count() << " s\n";	//dijk.elapsesd_time.count() benötigte Zeit
 			
+			//Verbinden der Städet des gefundenen Weges
 			for (int i = 1; i < dijk_path.size(); i++)
 			{
 				connect_city_dij(all_citys[dijk_path[i - 1]], all_citys[dijk_path[i]]);
 			}
+
+			//Nummer des Kontens unter die Stadt zeichen falls ausgewählt
 			for (int i = 0; i < dijk.checked_nodes.size() && pathbox->Checked; i++)
 			{
 				drawnumber(i, all_citys[dijk.checked_nodes[i]]->pos[0], all_citys[dijk.checked_nodes[i]]->pos[1]);
 			}
 
+			//Zeiten auslesen und casten in System::String
 			System::String^ nodes = gcnew String(System::Convert::ToString(dijk.cycles));
 			System::String^ time = gcnew String(System::Convert::ToString((dijk.elapsed_time.count()*1000)));
+			//Zeiten in Gui anzeigen
 			this->dijk_time->Text = time;
 			this->dijk_nodes->Text = nodes;
 		}
+
+		//Falls Dijk nicht ausgewählt wird die Zeit in der GUI auf 0 gesetzt
 		else
 		{
 			this->dijk_time->Text = L"0";
@@ -579,17 +608,9 @@ namespace Project1 {
 		
 		if (AsternCheckBox->Checked)
 		{
-			//cout << "A-Stern ausgewählt" << endl;
 			astar_algo a_star;
-			//cout << "A_STAR:\n";
-			//bool median_aster = true;
 			vector<int> astar_path = a_star.astar(StartBox->SelectedIndex, DestinationBox->SelectedIndex, adjazenzmatrix, city_positions, time_median_check_box->Checked);	//Ausführen des A*, Übergabe: Start, Ziel, Verbindungsmatrix, Koordinaten. Rückgabe ist der Vektor mit dem gefunden Weg
 			
-			//for (int ij = 0; ij < astar_path.size(); ij++)
-				//cout << astar_path[ij] << " ";					//astar_path[] enthält jetzt in Umgekehrter Folge den Weg. Ziel -> Start
-			//cout << "\nCycles: " << a_star.cycles << "\n";		//a_star.cycles ist die Anzahl von Durchläufen bis der Weg gefunden wurde
-			//cout << "Elapsed time: " << a_star.elapsed_time.count() << " s\n"; //a_star.elapsed_time.count() enthält die dafür benötigte Zeit in sec.
-
 			for (int i = 1; i < astar_path.size(); i++)
 			{
 				connect_city_astern(all_citys[astar_path[i - 1]], all_citys[astar_path[i]]);
@@ -614,6 +635,7 @@ namespace Project1 {
 		}
 
 	}
+
 	private: System::Void StartBox_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) 
 	{
 
@@ -622,6 +644,8 @@ namespace Project1 {
 	{
 
 	}
+
+	//Neue Karte wird eingelesen und gezeichnet
 	private: System::Void newMapButton_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		NewMapDialog->Filter = "Txt Files (*.txt)|*.txt";
@@ -637,9 +661,6 @@ namespace Project1 {
 			return;
 		}
 
-		//clear map area and dropdown menues
-
-
 	
 		//Lex Analyse
 		CParser obj;
@@ -652,12 +673,13 @@ namespace Project1 {
 		LEX_ADJAZENZMATRIX = Lex_Adjazenzmatrix(LEX_ALL_CITYS);
 		LEX_ALL_POSITIONS = Lex_Positions(LEX_ALL_CITYS);
 
-		//save data to use in diffrent eventhandler
+		//Speichern der Map in "globale" Variable um Sie an andere Eventhendler zu übergeben
 		this->set_citys_map(LEX_ALL_CITYS);
 		this->set_city_positions(LEX_ALL_POSITIONS);
 		this->set_adjazenzmatrix(LEX_ADJAZENZMATRIX);
 		map_existing = TRUE;
-		//draw map and add all citys to dropdown
+
+		//Karte wird gezeichnet und alle Städte zum Dropdown hinzugefügt
 		drawmap();
 		this->StartBox->Items->Clear();
 		this->DestinationBox->Items->Clear();
@@ -665,11 +687,9 @@ namespace Project1 {
 		{
 			this->addCity(all_citys[i]);
 		}
-		//for (int i = 0; i < all_citys.size(); i++)
-		//{
-		//	adddropdown(all_citys[i]->City_Name);
-		//}
+
 	}
+
 	private: System::Void comboBox1_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) 
 	{
 	}
@@ -701,6 +721,8 @@ namespace Project1 {
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) 
 	{
 	}
+	
+	//Suche nach unterschiedlichen Wegen
 	private: System::Void show_path_button_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 		dijkstra_algo dijk;
@@ -740,53 +762,63 @@ namespace Project1 {
 				}
 			}
 	}
+
+	//Karte wird neu gezeichnet
 	private: System::Void clear_map_button_Click(System::Object^ sender, System::EventArgs^ e) 
 	{
 	drawmap();
 	}
+	
+	//Rechts und Linksklick überprüfung um Start und Zielstadt auszuwählen
 	private: System::Void MapArea_MouseDown_1(System::Object^ sender, System::Windows::Forms::MouseEventArgs^ e) 
 	{
+
+		//Überprüfen ob Rechtsklick
 		if (e->Button == System::Windows::Forms::MouseButtons::Right)
 		{
 			BOOLEAN nomatch = TRUE;
 			Point mouse_position = MapArea->PointToClient(Cursor->Position);
 			int i = 0;
+			//Durlauf durch alle Städte
 			for ( i = 0; i < all_citys.size() && nomatch; i++)
 			{
-				//cout << i << endl;
+				//Überprüfung X-Kordinate im Abstand von 5 von einer Stadt.
 				if ((all_citys[i]->pos[0]-5) < mouse_position.X && mouse_position.X < (all_citys[i]->pos[0] + 5))
 				{
-					//cout << all_citys[i]->pos[0] - 5 <<"  "<< mouse_position.X<<"  "<< all_citys[i]->pos[0] + 5 << endl;
+					//Überprüfung ob Y-Koordinate der gefunden Stadt auch im Abstand von 5 ist.
 					if (all_citys[i]->pos[1] - 5 < mouse_position.Y && mouse_position.Y < (all_citys[i]->pos[1] + 5))
 					{
-						//cout << i << endl;
+						//Abbruchbedingung der äußeren Schleife
 						nomatch = FALSE;
 					}
 				}
 			}
-			if (all_citys.size() == i)
+			if (nomatch)
 				return;
 			this->DestinationBox->SelectedIndex = (i-1);
 		}
+
+		//Überprüfen ob Linksklick
 		if (e->Button == System::Windows::Forms::MouseButtons::Left)
 		{
 			BOOLEAN nomatch = TRUE;
 			Point mouse_position = MapArea->PointToClient(Cursor->Position);
 			int i = 0;
+			//Durlauf durch alle Städte
 			for (i = 0; i < all_citys.size() && nomatch; i++)
 			{
-				//cout << i << endl;
+				//Überprüfung X-Kordinate im Abstand von 5 von einer Stadt.
 				if ((all_citys[i]->pos[0] - 5) < mouse_position.X && mouse_position.X < (all_citys[i]->pos[0] + 5))
-				{
-					//cout << all_citys[i]->pos[0] - 5 << "  " << mouse_position.X << "  " << all_citys[i]->pos[0] + 5 << endl;
+				{	
+					//Überprüfung ob Y-Koordinate der gefunden Stadt auch im Abstand von 5 ist.
 					if (all_citys[i]->pos[1] - 5 < mouse_position.Y && mouse_position.Y < (all_citys[i]->pos[1] + 5))
 					{
-						//cout << i << endl;
+						//Abbruchbedingung der äußeren Schleife
 						nomatch = FALSE;
 					}
 				}
 			}
-			if (all_citys.size() == i)
+			if (nomatch)
 				return;
 			this->StartBox->SelectedIndex = (i - 1);
 		}
