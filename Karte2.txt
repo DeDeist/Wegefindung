@@ -58,11 +58,13 @@ Name: Loeffingen	{ Pose=[165,839], Neighbours = [Freiburg,Freudenstadt,Singen], 
 Name: Ulm		{ Pose=[309,754], Neighbours = [Stuttgart,Wuerzburg,Kempten,Lindau,Muenchen], Time = [10,10,10,10,10]}
 Name: Lindau		{ Pose=[279,844], Neighbours = [Ulm,Muenchen,Kempten], Time = [10,10,10]}
 Name: Singen		{ Pose=[216,828], Neighbours = [Stuttgart,Loeffingen,Freiburg], Time = [10,10,10]}
-Name: Kempten		{ Pose=[328,833], Neighbours = [Ulm,Lindau,Muenchen], Time = [10,10,10]}
-Name: Muenchen		{ Pose=[425,783], Neighbours = [Ulm,Nuernberg,Regensburg,Passau,Garmisch-Partenkirchen,Rosenheim,Lindau,Kempten], Time = [10,10,10,10,10,10,10,10]}
+Name: Kempten		{ Pose=[328,833], Neighbours = [Peiting,Ulm,Lindau,Muenchen], Time = [10,10,10,10]}
+Name: Muenchen		{ Pose=[425,783], Neighbours = [Peiting, Ulm,Nuernberg,Regensburg,Passau,Garmisch-Partenkirchen,Rosenheim,Lindau,Kempten], Time = [10,10,10,10,10,10,10,10,10]}
 Name: Regensburg	{ Pose=[465,681], Neighbours = [Nuernberg,Hof,Passau,Muenchen], Time = [10,10,10,10]}
 Name: Passau		{ Pose=[570,719], Neighbours = [Regensburg,Muenchen], Time = [10,10]}
 Name: Rosenheim		{ Pose=[471,815], Neighbours = [Muenchen], Time = [10]}
+Name: Garmisch-Partenkirchen { Pose=[391,856], Neighbours = [Muenchen, Peiting], Time = [10,10]}
 Name: Frankfurt-Oder	{ Pose=[624,295], Neighbours = [Berlin], Time = [10]}
-Name: Garmisch-Partenkirchen { Pose=[391,856], Neighbours = [Muenchen], Time = [10]}
+Name: Peiting		{ Pose=[392,820], Neighbours = [Muenchen, Kempten, Garmisch-Partenkirchen], Time = [10,10,10]}
+
 
