@@ -66,3 +66,5 @@ Name: Rosenheim		{ Pose=[471,815], Neighbours = [Muenchen], Time = [10]}
 Name: Garmisch-Partenkirchen { Pose=[391,856], Neighbours = [Muenchen, Peiting], Time = [10,10]}
 Name: Frankfurt-Oder	{ Pose=[624,295], Neighbours = [Berlin], Time = [10]}
 Name: Peiting		{ Pose=[392,820], Neighbours = [Muenchen, Kempten, Garmisch-Partenkirchen], Time = [10,10,10]}
+
+

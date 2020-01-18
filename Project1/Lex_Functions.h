@@ -11,10 +11,8 @@ vector<vector<float>> Lex_Positions(map<int, City*>);
 #define xxx 10000
 
 
-// ihr Nasen
-
 /*
-Funktion zur Erstellung der nxn-Adjazenzmatrix für die Algorithmen
+Funktion zur Erstellung einer Liste mit Städtenamen für die GUI
 
 -> bekommt map im Format: map<std::string, City*> übergeben die alle eingelesenen Städte enthält
 
@@ -39,11 +37,20 @@ vector<string> Lex_Drop_Down(map<int, City*>a_map)
 	return all;
 }
 
+
+/*
+Funktion zur Erstellung einer Liste aller Städtepositionen für den A*-Algorithmus
+
+-> bekommt map im Format: map<std::string, City*> übergeben die alle eingelesenen Städte enthält
+
+-- Dynamisch erstellter Vector mit allen Positionen der Städte
+
+<- gibt Vector mit allen Positionen der Städte der übergebenen Map zurück
+*/
 vector<vector<float>> Lex_Positions(map<int, City*> a_map)
 {
 	vector<vector<float>> X_Y_Pos;
 	vector<float> pos;
-
 
 	int size = a_map.size();
 
@@ -52,16 +59,7 @@ vector<vector<float>> Lex_Positions(map<int, City*> a_map)
 		pos = a_map[i]->pos;
 		X_Y_Pos.push_back(pos);
 	}
-
-	//for (int c = 0; c < size; c++)
-	//{
-	//	
-	//	cout << "{" << X_Y_Pos[c][0] << "," << X_Y_Pos[c][1] << "}"<< endl;
-
-	//}
-
-
-
+	   	 
 	return X_Y_Pos;
 }
 
@@ -150,7 +148,7 @@ vector<vector<float>> Lex_Adjazenzmatrix( map<int, City*>a_map)
 				int x = (a_map[i]->pos[0] - a_map[j]->pos[0]);
 				int y = (a_map[i]->pos[1] - a_map[j]->pos[1]);
 
-				nxn[i][j] = (int)(sqrt(x*x + y*y)*(a_map[i]->Time[ind])/10);
+				nxn[i][j] = (int)(sqrt(x*x + y*y)*(a_map[i]->Time[ind])/10);		//Multipliziert Abstand mit dem Zeitfaktor des jeweiligen Nachbars
 			}
 
 			else // Traegt inf. ein
