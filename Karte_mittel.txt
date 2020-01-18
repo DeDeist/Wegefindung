@@ -1,0 +1,33 @@
+Name: Duesseldorf	{ Pose=[75,421],  Neighbours = [Koeln,Aachen], Time = [10,10]}
+Name: Koeln		{ Pose=[84,455],  Neighbours = [Duesseldorf,Aachen,Bonn], Time = [10,10,10]}
+Name: Bonn		{ Pose=[97,483],  Neighbours = [Aachen,Koeln,Koblenz], Time = [10,10,10]}
+Name: Aachen		{ Pose=[21,479],  Neighbours = [Duesseldorf,Koeln,Bonn], Time = [10,10,10]}
+Name: Koblenz		{ Pose=[132,527], Neighbours = [Bonn,Trier,Wiesbaden], Time = [10,10,10]}
+Name: Wiesbaden		{ Pose=[169,556], Neighbours = [Mainz,Koblenz,Frankfurt], Time = [10,10,10]}
+Name: Mainz		{ Pose=[176,572], Neighbours = [Wiesbaden,Frankfurt,Mannheim,Kaiserslautern], Time = [10,10,10,10]}
+Name: Frankfurt		{ Pose=[224,535], Neighbours = [Wiesbaden,Mainz,Wuerzburg,Mannheim], Time = [10,10,10,10]}
+Name: Kaiserslautern	{ Pose=[138,632], Neighbours = [Trier,Saarbruecken,Mainz,Mannheim], Time = [10,10,10,10]}
+Name: Trier		{ Pose=[56,593],  Neighbours = [Koblenz,Kaiserslautern,Saarbruecken], Time = [10,10,10]}
+Name: Saarbruecken	{ Pose=[80,654],  Neighbours = [Kaiserslautern,Trier], Time = [10,10]}
+Name: Mannheim		{ Pose=[207,615], Neighbours = [Mainz,Kaiserslautern,Karlsruhe,Heilbronn,Frankfurt], Time = [10,10,10,10,10]}
+Name: Karlsruhe		{ Pose=[182,684], Neighbours = [Mannheim,Freiburg,Stuttgart,Freudenstadt], Time = [10,10,10,10]}
+Name: Heilbronn		{ Pose=[248,670], Neighbours = [Wuerzburg,Mannheim,Stuttgart,Nuernberg], Time = [10,10,10,10]}
+Name: Wuerzburg		{ Pose=[300,595], Neighbours = [Heilbronn,Frankfurt,Bamberg,Nuernberg,Ulm], Time = [10,10,10,10,10]}
+Name: Bamberg		{ Pose=[373,578], Neighbours = [Wuerzburg,Nuernberg], Time = [10,10]}
+Name: Nuernberg		{ Pose=[388,633], Neighbours = [Wuerzburg,Bamberg,Regensburg,Heilbronn,Muenchen], Time = [10,10,10,10,10]}
+Name: Stuttgart		{ Pose=[243,710], Neighbours = [Heilbronn,Karlsruhe,Ulm,Singen,Freudenstadt], Time = [10,10,10,10,10]}
+Name: Freiburg		{ Pose=[140,797], Neighbours = [Karlsruhe,Loeffingen,Singen,Freudenstadt], Time = [10,10,10,10]}
+Name: Freudenstadt	{ Pose=[183,738], Neighbours = [Karlsruhe,Stuttgart,Freiburg,Loeffingen], Time = [10,10,10,10]}
+Name: Loeffingen	{ Pose=[165,839], Neighbours = [Freiburg,Freudenstadt,Singen], Time = [10,10,10]}
+Name: Ulm		{ Pose=[309,754], Neighbours = [Stuttgart,Wuerzburg,Kempten,Lindau,Muenchen], Time = [10,10,10,10,10]}
+Name: Lindau		{ Pose=[279,844], Neighbours = [Ulm,Muenchen,Kempten], Time = [10,10,10]}
+Name: Singen		{ Pose=[216,828], Neighbours = [Stuttgart,Loeffingen,Freiburg], Time = [10,10,10]}
+Name: Kempten		{ Pose=[328,833], Neighbours = [Peiting,Ulm,Lindau,Muenchen], Time = [10,10,10,10]}
+Name: Muenchen		{ Pose=[425,783], Neighbours = [Peiting, Ulm,Nuernberg,Regensburg,Passau,Garmisch-Partenkirchen,Rosenheim,Lindau,Kempten], Time = [10,10,10,10,10,10,10,10,10]}
+Name: Regensburg	{ Pose=[465,681], Neighbours = [Nuernberg,Passau,Muenchen], Time = [10,10,10]}
+Name: Passau		{ Pose=[570,719], Neighbours = [Regensburg,Muenchen], Time = [10,10]}
+Name: Rosenheim		{ Pose=[471,815], Neighbours = [Muenchen], Time = [10]}
+Name: Garmisch-Partenkirchen { Pose=[391,856], Neighbours = [Muenchen, Peiting], Time = [10,10]}
+Name: Peiting		{ Pose=[392,820], Neighbours = [Muenchen, Kempten, Garmisch-Partenkirchen], Time = [10,10,10]}
+
+
