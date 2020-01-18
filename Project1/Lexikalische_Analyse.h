@@ -14,7 +14,7 @@ using namespace std;
 /*
 * Lexical analyzer states.
 */
-enum lexstate {
+enum lexstate { // lexstate ist ein Aufzählungtyp und beinhaltet die folgendnen "Zustände". Bsp: L_START = 0, L_INT = 1,...
 	L_START, L_INT, L_IDENT, L_STRING, L_STRING2,
 	L_COMMENT, L_TEXT_COMMENT, L_LINE_COMMENT, L_END_TEXT_COMMENT
 };
@@ -62,7 +62,7 @@ void CParser::PushString(char c)
 	yylval.s += c;
 }
 //------------------------------------------------------------------------
-void CParser::Load_tokenentry(string str, int index)
+void CParser::Load_tokenentry(string str, int index) // Schreibt die in IP_init_token_table() erstellten token in sie beidne Token-Tabellen 
 {
 	IP_Token_table[str] = index;
 	IP_revToken_table[index] = str;
@@ -75,16 +75,16 @@ void CParser::IP_init_token_table()
 
 	int ii = TOKENSTART;
 
-	Load_tokenentry("Time", TIME1);
-	Load_tokenentry("Pose", POSE1);
-	Load_tokenentry("Neighbours", NEIGHBOURS1);
-	Load_tokenentry("Name", NAME1);
+	Load_tokenentry("Time", TIME1);					//Eigens hinzugefügter Token für yyparce()
+	Load_tokenentry("Pose", POSE1);					//Eigens hinzugefügter Token für yyparce()
+	Load_tokenentry("Neighbours", NEIGHBOURS1);		//Eigens hinzugefügter Token für yyparce()
+	Load_tokenentry("Name", NAME1);					//Eigens hinzugefügter Token für yyparce()
 
 
 
 }
 //------------------------------------------------------------------------
-void CParser::pr_tokentable()
+void CParser::pr_tokentable() // Ausgabe der Tokentabelle -> wird nicht verwendet
 {
 	typedef map<string, int>::const_iterator CI;
 	const char* buf;
@@ -123,40 +123,40 @@ map<int, City*> CParser::yyparse()
 	while ((tok = yylex()) != 0)
 	{
 		//printf("%d ", tok);
-		if (tok == INTEGER1)
+		if (tok == INTEGER1)	// ist tok ein Integer? j/n
 		{
-			if (PARSE_STATE == TIME1)
+			if (PARSE_STATE == TIME1) // wenn PARSE_STATE == TIME1 dann ist der Integer ein Zeit- bzw. Kostenfaktor
 			{
 				times.push_back(yylval.i);
 			};
 
-			if (PARSE_STATE == POSE1)
+			if (PARSE_STATE == POSE1) // wenn PARSE_STATE == POSE1 dann ist der Integer eine Koordinate
 			{
 				poses.push_back(yylval.i);
 			};
 		}
 		else
-			if (tok == IDENTIFIER)
+			if (tok == IDENTIFIER)		// ist tok ein Identifier (Wort)? j/n
 			{
-				if (PARSE_STATE == NAME1)
+				if (PARSE_STATE == NAME1)		// wenn PARSE_STATE == NAME1 dann ist der Identiefier der Stadtname
 				{
 					NAME = yylval.s;
 
 					Citys.insert(make_pair(ind, new City()));  // Erstellt Spalte in der Map: "All_Citys" in der zum einen Der Name der Stadt und dessen Instanz abgelegt sind
 				};
-				if (PARSE_STATE == NEIGHBOURS1)
+				if (PARSE_STATE == NEIGHBOURS1) // wenn PARSE_STATE == NAME1 dann ist der Identifier ein Nachbar
 				{
 					neighbours.push_back(yylval.s);
 				};
 			}
 			else
-				if (tok >= TOKENSTART)
+				if (tok >= TOKENSTART) // Wenn tok >= TOKENSTART, dann wird der ensprechnde Status(PARSE_STATE) gesetzt
 				{
 					PARSE_STATE = tok;
 				}
 				else
 				{
-					if (tok == 125)
+					if (tok == '}')		// Nach ende eines Datenstzes, werden die Objektmethoden zum einlesen der Werte aufgerufen und die Vektoren Initialisiert(.clear)
 					{
 						Citys[ind]->set_City_Name(NAME);// Name der Stadt in das Objekt schreiben
 						Citys[ind]->set_pos(poses);
@@ -170,7 +170,7 @@ map<int, City*> CParser::yyparse()
 				}
 
 	}
-	return Citys;
+	return Citys; // Rückgabewert ist die Map mit allen Objekten der einzelnen Städte
 }
 
 //------------------------------------------------------------------------
@@ -194,14 +194,14 @@ void CParser::InitParse(FILE* inp, FILE* err, FILE* lst)
 	IP_init_token_table();
 }
 //------------------------------------------------------------------------
-int CParser::IP_MatchToken(string& tok)
+int CParser::IP_MatchToken(string& tok)		// Vergleich zweier token auf ihre Übereinstimmung
 {
 	int retval;
 	if (IP_Token_table.find(tok) != IP_Token_table.end()) {
-		retval = (IP_Token_table[tok]);
+		retval = (IP_Token_table[tok]);		// wenn gleich
 	}
 	else {
-		retval = (0);
+		retval = (0);						// Wenn ungleich
 	}
 	return retval;
 }
@@ -219,46 +219,50 @@ int CParser::yylex()
 	* Keep on sucking up characters until we find something which
 	* explicitly forces us out of this function.
 	*/
-	for (s = L_START, yytext = ""; 1;) {
-		c = Getc(IP_Input);
-		yytext = yytext + (char)c;
-		if (!ugetflag) {
+	for (s = L_START, yytext = ""; 1;) // s wird mit L_START und yytext (Buffer) mit "" initialisiert
+	{
+		c = Getc(IP_Input);	// holt sich den Ascii-Wert auf den der FILE-Pointer zeigt
+		yytext = yytext + (char)c; // schriebt sich den character des Ascii-Wertes in den Buffer
+		if (!ugetflag) { // Errorabfrage
 			if (c != EOF)if (prflag)fprintf(IP_List, "%c", c);
 		}
 		else ugetflag = 0;
 		switch (s) {
 			//Starting state, look for something resembling a token.
-		case L_START:
+		case L_START: // 1. Fall -> s = L_START: 
 			
-			if (isdigit(c)) {
-				s = L_INT;
+			if (isdigit(c)) {	// isdigit() überprüft "c" darauf, eine Ganzzahl zwischen 0 und 9 zu sein 
+				s = L_INT;		// wenn ja dann wird s = L_INT 
 			}
-			else if (isalpha(c) || c == '\\') {
-				s = L_IDENT;
+			else if (isalpha(c) || c == '\\') {		//isalpha() überprüft "c" darauf ein Buchstabe oder "\\" zu sein
+				s = L_IDENT;						//wenn ja dann 				
 			}
-			else if (isspace(c)) {
-				if (c == '\n') {
+			else if (isspace(c)) {					//Überprüft "c" darauf ein Leerzeichen, Tab oder "enld" zu sein
+				if (c == '\n') {					// wenn endl dann Zeilennummer erhöhen
 					IP_LineNumber += 1;
 					if (prflag)
 						fprintf(IP_List, "%5d ", (int)IP_LineNumber);
 				}
-				yytext = "";
+				yytext = ""; // Buffer leeren
 			}
-			else if (c == '/') {
-				yytext = "";
+			else if (c == '/') {		//  wenn c == '/' dann wird s auf L_COMMENT gesetzt
+				yytext = "";			// Buffer leeren
 				s = L_COMMENT;
 			}
-			else if (c == '"') {
+			else if (c == '"') {		// wenn c == '"' dann... s = L_STRING
 				s = L_STRING;
 			}
-			else if (c == EOF) {
+			else if (c == EOF) {		// wenn c == EOF springen wir aus der FOR-Schleife und aus der methode yylex()
 				return ('\0');
 			}
-			else {
-				return (c);
+			else {						// falls der case nicht klar ist wird der character zurückgegeben  und yylex() beendet
+				return (c);	
 			}
-			break;
-		case L_COMMENT:
+			break; // Ende erster Case
+
+
+			
+		case L_COMMENT://-------------------------------- Bginn des L_COMMENT Case
 			if (c == '/')
 				s = L_LINE_COMMENT;
 			else if (c == '*')
@@ -268,14 +272,14 @@ int CParser::yylex()
 				return('/'); /* its the division operator not a comment */
 			}
 			break;
-		case L_LINE_COMMENT:
+		case L_LINE_COMMENT://-------------------------------- Bginn des L_LINE_COMMENT Case
 			if (c == '\n') {
-				s = L_START;
+				s = L_START;// zurück zum Start
 				Ungetc(c);
 			}
 			yytext = "";
 			break;
-		case L_TEXT_COMMENT:
+		case L_TEXT_COMMENT://-------------------------------- Bginn des L_TEXT_COMMENT Case
 			if (c == '\n') {
 				IP_LineNumber += 1;
 			}
@@ -283,27 +287,27 @@ int CParser::yylex()
 				s = L_END_TEXT_COMMENT;
 			yytext = "";
 			break;
-		case L_END_TEXT_COMMENT:
+		case L_END_TEXT_COMMENT://-------------------------------- Bginn des L_END_TETX_COMMENT Case
 			if (c == '/') {
-				s = L_START;
+				s = L_START;// zurück zum Start
 			}
 			else {
 				s = L_TEXT_COMMENT;
 			}
-			yytext = "";
+			yytext = ""; // Buffer leeren
 			break;
 			/*
 			* Suck up the integer digits.
 			*/
-		case L_INT:
-			if (isdigit(c)) {
+		case L_INT: // 
+			if (isdigit(c)) { // Wenn ein C ein interger dann wird er zu beginn der schleife yytext hinzugefügt
 				break;
 			}
-			else {
-				Ungetc(c);
-				yylval.s = yytext.substr(0, yytext.size() - 1);
-				yylval.i = atoi(yylval.s.c_str());
-				return (INTEGER1);
+			else {  
+				Ungetc(c); // Wenn c kein Integer dann wird c dem Datenstrom zurückgegeben
+				yylval.s = yytext.substr(0, yytext.size() - 1); // formt einen String aus den in yytext stehenden charactern der Länge yytext.size()-1
+				yylval.i = atoi(yylval.s.c_str()); // Formt einen Integer aus dem String in yylval.s
+				return (INTEGER1); // der Token INTEGER1 wird an yyparse() zurückgegeben und kann die Zahl in yylval aufgerufen werden
 			}
 			break;
 			/*
@@ -311,16 +315,16 @@ int CParser::yylex()
 * it with a specific token value.
 */
 		case L_IDENT:
-			if (isalpha(c) || isdigit(c) || c == '_' || c == '-')
+			if (isalpha(c) || isdigit(c) || c == '_' || c == '-')  // Wenn ein C ein character (oder wie def.) dann wird er zu beginn der schleife yytext hinzugefügt
 				break;
 			Ungetc(c);
-			yytext = yytext.substr(0, yytext.size() - 1);
-			yylval.s = yytext;
-			if (c = IP_MatchToken(yytext)) {
-				return (c);
+			yytext = yytext.substr(0, yytext.size() - 1); // formt einen String aus den in yytext stehenden charactern der Länge yytext.size()-1
+			yylval.s = yytext; // Schreibt den String aus yytext in yylaval.s
+			if (c = IP_MatchToken(yytext)) { // hier wird überprüft ob es sich dei dem IDENTIFIER um einen in der Tokentable definierten token handelt
+				return (c);					// der dann an yyparse() zurückgegeben wird
 			}
 			else {
-				return (IDENTIFIER);
+				return (IDENTIFIER);// IDENTIEFIER wird  an yyparse() zurückgegeben 
 			}
 			/*
 			* Suck up string characters but once resolved they should
